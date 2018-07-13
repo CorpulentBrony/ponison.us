@@ -43,7 +43,7 @@
 			To see current progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a> and the <a href="//trello.com/b/5QZzxXFt/ponisonus" rel="external noopener" target="_blank" type="text/html">Trello board</a>.  Please keep checking back.
 		</p>
 		<p>
-			For now, you can at least listen to the voice of best pony:
+			For now, you can at least listen to the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
 			<ul>
 				<li>
 					Season 1:
@@ -78,5 +78,30 @@
 				<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
 			</ul>
 		</p>
+		<button id="button-test" type="button">Test</button>
+		<script nonce="<!--# echo var="nonce" -->">
+			"use strict";
+
+			(function index() {
+				const isDocumentLoaded = new window.Promise((resolve) => {
+					if (window.document.readyState === "loading")
+						window.document.addEventListener("DOMContentLoaded", resolve, false);
+					else
+						resolve();
+				});
+
+				function buttonTestOnClick() {
+					fetch("//api.ponison.us/index.php", { body: JSON.stringify({ requestType: "list" }), headers: { ["Content-Type"]: "application/json" }, method: "POST" })
+						.then((response) => response.text())
+						.then(console.log)
+						.catch(console.error);
+				}
+
+				(async function onDocumentLoad() {
+					await isDocumentLoaded;
+					window.document.getElementById("button-test").addEventListener("click", buttonTestOnClick, false);
+				})().catch(console.error);
+			})();
+		</script>
 	</body>
 </html>
