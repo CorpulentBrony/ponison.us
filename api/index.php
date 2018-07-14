@@ -9,7 +9,7 @@
 	// ini_set("display_errors", 1); // comment out in prod
 
 	try {
-		$requestText = file_get_contents("php://input");
+		$requestText = $requestText ?? file_get_contents("php://input");
 		$requestDecoded = json_decode($requestText);
 
 		if (is_null($requestDecoded))

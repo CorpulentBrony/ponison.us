@@ -1,4 +1,6 @@
 <?php
+	// https://trac.ffmpeg.org/wiki/Concatenate - using the demux; generate temp file with list of fiels and then process the command
+	// this is another alternative but command line could get too long ffmpeg -i "concat:breath_s1e01_001.mp3|breath_s1e01_002.mp3" -c copy test1.mp3
 	class Request {
 		const DEFAULT_DESIRED_LENGTH_SECONDS = 1;
 		const DEFAULT_MIN_DELAY_SECONDS = 0;
@@ -49,7 +51,7 @@
 		}
 
 		public function fulfillAudio() {
-			// todo
+			throw new \Exception("Audio fulfillment is not yet ready " . json_encode([$this->requestType, $this->ponies, $this->soundTypes]));
 		}
 
 		public function fulfillList() {
