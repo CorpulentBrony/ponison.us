@@ -1,17 +1,22 @@
 <?php
 	require_once "FileSystemObject.php";
-	require_once "SoundType.php";
 
 	class Pony extends FileSystemObject {
-		protected $soundTypes = []; // [SoundType]
+		protected $soundTypeList = []; // [SoundTypeList]
 
-		public function getSoundTypes(): array {
-			if (count($this->soundTypes) === 0)
-				foreach (new \FileSystemIterator(parent::getPath()) as $soundType)
-					$this->soundTypes[] = new SoundType($soundType);
-			return $this->soundTypes;
+		public function getSoundTypeList(array $soundTypeListFilter = []): array {
+			if (count($this->soundTypeList) === 0) {
+				require_once "SoundTypeList.php";
+
+				foreach (new \FileSystemIterator(parent::getPath()) as $soundTypeList)
+					$this->soundTypeList[] = new SoundTypeList($soundTypeList);
+			}
+
+			if (count($soundTypeListFilter) > 0)
+				return array_filter($this->soundTypeList, function(SoundTypeList $soundTypeList) use ($soundTypeListFilter): bool { return in_array($soundTypeList->getName(), $soundTypeListFilter, true); });
+			return $this->soundTypeList;
 		}
 
-		public function jsonSerialize() { return ["name" => parent::getName(), "soundTypes" => $this->getSoundTypes()]; }
+		public function jsonSerialize() { return ["name" => parent::getName(), "soundTypes" => $this->getSoundTypeList()]; }
 	}
 ?>

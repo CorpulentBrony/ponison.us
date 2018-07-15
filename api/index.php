@@ -5,8 +5,8 @@
 	header("Access-Control-Allow-Origin: https://ponison.us");
 	header("Vary: Origin");
 
-	// error_reporting(E_ALL); // comment out in prod
-	// ini_set("display_errors", 1); // comment out in prod
+	error_reporting(E_ALL); // comment out in prod
+	ini_set("display_errors", 1); // comment out in prod
 
 	try {
 		$requestText = $requestText ?? file_get_contents("php://input");
