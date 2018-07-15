@@ -5,14 +5,15 @@
 		const DEFAULT_DESIRED_LENGTH_SECONDS = 1;
 		const DEFAULT_MIN_DELAY_SECONDS = 0;
 		const DEFAULT_OUTPUT_FORMAT = "mp3";
-		const DEFAULT_PONIES = [];
-		const DEFAULT_SOUND_TYPES = [];
+		const DEFAULT_PONIES = ["Twilight Sparkle"];
+		const DEFAULT_SOUND_TYPES = ["Breath"];
 		const MAX_DESIRED_LENGTH_SECONDS = 60 * 60;
 		const MIN_DELAY_SECONDS = 0;
 		const MIN_DESIRED_LENGTH_SECONDS = 1;
 		const PONY_DIR = __DIR__ . "/../../pony/";
 		const UNKNOWN_REQUEST_TYPE_MESSAGE = "Unknown request type, do not know how to fulfill requests of type %s";
 		const UNSUPPLIED_REQUEST_TYPE_MESSAGE = "Request type not supplied";
+		const UNSUPPLIED_VALUE_MESSAGE = "You must select at least one %s";
 		const VALID_OUTPUT_FORMATS = ["mp3"];
 		const VALID_REQUEST_TYPES = ["audio", "list"];
 
@@ -26,7 +27,13 @@
 
 		public function __construct(\stdClass $request) {
 			if (!isset($request->requestType))
-				throw new \UnexpectedValueException(self::UNSUPPLIED_REQUEST_TYPE_MESSAGE);
+				throw new \UnexpectedValueException(sprintf(self::UNSUPPLIED_VALUE_MESSAGE, "request type"));
+
+			if (is_array($request->ponies) && count($request->ponies) === 0)
+				$request->ponies = null;
+
+			if (is_array($request->soundTypes) && count($request->soundTypes) === 0)
+				$request->soundTypes = null;
 			$this->setRequestType(strval($request->requestType));
 			$this->setDesiredLengthSeconds(intval($request->desiredLengthSeconds ?? self::DEFAULT_DESIRED_LENGTH_SECONDS));
 			$this->setDelaySeconds(intval($request->minDelaySeconds ?? self::DEFAULT_MIN_DELAY_SECONDS), $request->maxDelaySeconds ?? null);
@@ -51,7 +58,7 @@
 		}
 
 		public function fulfillAudio() {
-			throw new \Exception("Audio fulfillment is not yet ready " . json_encode([$this->requestType, $this->ponies, $this->soundTypes]));
+			throw new \Exception("Audio fulfillment is not yet ready " . json_encode([$this->requestType, $this->desiredLengthSeconds, $this->minDelaySeconds, $this->maxDelaySeconds, $this->outputFormat, $this->ponies, $this->soundTypes]));
 		}
 
 		public function fulfillList() {

@@ -42,7 +42,7 @@
 				display: flex;
 				flex-wrap: wrap;
 			}
-			#div-sound-types > span { padding: 0 0.5rem; }
+			#div-sound-types > span, fieldset > span { padding: 0 0.5rem; }
 		</style>
 		<script async defer src="/js/index.js"></script>
 	</head>
@@ -119,6 +119,10 @@
 			</div>
 			<fieldset>
 				<legend>Select sound type(s)</legend>
+				<span>
+					<input id="input-select-all" type="checkbox">
+					<label for="input-select-all">Select All</label>
+				</span>
 				<div id="div-sound-types">
 					If you see this message, then either you have JavaScript disabled or your browser is not supported.  Try the newest version of <a href="https://www.google.com/chrome/browser/" rel="external noopener" target="_blank" type="text/html">Chrome</a> or <a href="https://www.mozilla.org/firefox" rel="external noopener" target="_blank" type="text/html">Firefox</a>.
 				</div>

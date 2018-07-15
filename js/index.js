@@ -8,6 +8,7 @@
 		inputDesiredLengthSeconds: undefined, 
 		inputMaxDelaySeconds: undefined, 
 		inputMinDelaySeconds: undefined, 
+		inputSelectAll: undefined,
 		scriptList: undefined, 
 		selectOutputFormat: undefined, 
 		selectPonies: undefined
@@ -19,39 +20,31 @@
 			resolve();
 	});
 	const soundTypeOptionsMap = new window.Map();
+	let divSoundTypeInputs = undefined;
 
 	function addSoundTypeToList(parent, ponyName, soundType) {
 		const span = createElement("span", {}, parent);
 		const inputId = `input-${soundType.name.toLowerCase()}`;
 		createElement("input", { id: inputId, type: "checkbox", value: soundType.name }, span);
-		const label = createElement("label", { for: inputId }, span);
-		createElement("a", { href: `/pony/${ponyName}/${soundType.name}/`, target: "_blank", type: "text/html" }, label, soundType.name);
-		label.appendChild(window.document.createTextNode(` (${soundType.numberAvailable})`));
+		const label = createElement("label", { for: inputId }, span, `${soundType.name} (`);
+		createElement("a", { href: window.encodeURI(`/pony/${ponyName}/${soundType.name}/`), target: "_blank", type: "text/html" }, label, soundType.numberAvailable);
+		label.appendChild(window.document.createTextNode(")"));
 	}
 
 	function buttonGetAudioOnClick() {
 		const body = JSON.stringify({
 			requestType: "audio", 
 			desiredLengthSeconds: window.Number(elements.inputDesiredLengthSeconds.value),
-			inputMaxDelaySeconds: window.Number(elements.inputMaxDelaySeconds.value),
-			inputMinDelaySeconds: window.Number(elements.inputMinDelaySeconds.value),
+			maxDelaySeconds: window.Number(elements.inputMaxDelaySeconds.value),
+			minDelaySeconds: window.Number(elements.inputMinDelaySeconds.value),
 			outputFormat: elements.selectOutputFormat.value,
 			ponies: [elements.selectPonies.value], 
-			soundTypes: elements.divSoundTypes.value
+			soundTypes: getSelectedSoundTypes()
 		});
 		fetch(API_URL, { body, headers: { ["Content-Type"]: "application/json" }, method: "POST" })
 			.then((response) => response.text())
 			.then(console.log)
 			.catch(console.error);
-			// <!-- {
-			//     "requestType": "audio",
-			//     "desiredLengthSeconds": [1..3600],
-			//     "minDelaySeconds": [0..maxDelaySeconds],
-			//     "maxDelaySeconds": [minDelaySeconds..desiredLengthSeconds],
-			//     "outputFormat": string,
-			//     "ponies": Array<string>,
-			//     "soundTypes": Array<string>
-			// } -->
 	}
 
 	function createElement(name, attributes = {}, parent = undefined, text = undefined) {
@@ -66,6 +59,16 @@
 		return element;
 	}
 
+	function divSoundTypesOnChange() { inputSelectAllSetStatus(); }
+
+	function getSelectedSoundTypes() {
+		return Array.prototype.reduce.call(divSoundTypeInputs, (selectedSoundTypes, inputSoundType) => {
+			if (inputSoundType.checked)
+				selectedSoundTypes.push(inputSoundType.value);
+			return selectedSoundTypes;
+		}, new window.Array());
+	}
+
 	function initLists() {
 		const list = window.JSON.parse(elements.scriptList.textContent);
 		const ponyOptions = window.document.createDocumentFragment();
@@ -77,6 +80,24 @@
 		});
 		elements.selectPonies.appendChild(ponyOptions);
 		selectPoniesOnChange();
+	}
+
+	function inputSelectAllOnChange() {
+		divSoundTypeInputs.forEach((inputSoundType) => inputSoundType.checked = elements.inputSelectAll.checked);
+		console.log(elements.inputSelectAll.indeterminate);
+	}
+
+	function inputSelectAllSetStatus() {
+		const divSoundTypesSelected = Array.prototype.filter.call(divSoundTypeInputs, (inputSoundType) => inputSoundType.checked);
+		let state;
+
+		if (divSoundTypesSelected.length === divSoundTypeInputs.length)
+			state = { checked: true, indeterminate: false };
+		else if (divSoundTypesSelected.length > 0)
+			state = { checked: false, indeterminate: true };
+		else
+			state = { checked: false, indeterminate: false };
+		window.Object.assign(elements.inputSelectAll, state);
 	}
 
 	function removeAllChildren(node) {
@@ -98,7 +119,10 @@
 		for (const name in elements)
 			elements[name] = window.document.getElementById(name.replace(/([A-Z])/g, (c) => `-${c[0].toLowerCase()}`));
 		initLists();
+		divSoundTypeInputs = elements.divSoundTypes.querySelectorAll("input");
 		elements.buttonGetAudio.addEventListener("click", buttonGetAudioOnClick, false);
+		elements.divSoundTypes.addEventListener("change", divSoundTypesOnChange, false);
+		elements.inputSelectAll.addEventListener("change", inputSelectAllOnChange, false);
 		elements.selectPonies.addEventListener("change", selectPoniesOnChange, false);
 	})().catch(console.error);
 })();
