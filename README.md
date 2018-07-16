@@ -4,4 +4,4 @@
 
 See also the [Trello board](https://trello.com/b/5QZzxXFt/ponisonus).
 
-[ponyson.us](https://ponison.us) by [Corpulent Brony](https://github.com/CorpulentBrony) is licensed under a [Donut Steel Version 2 License](https://donutsteel.pl/) so pls do not steal kthx.
+[ponison.us](https://ponison.us) by [Corpulent Brony](https://github.com/CorpulentBrony) is licensed under a [Donut Steel Version 2 License](https://donutsteel.pl/) so pls do not steal kthx.
