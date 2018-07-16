@@ -82,10 +82,7 @@
 		selectPoniesOnChange();
 	}
 
-	function inputSelectAllOnChange() {
-		divSoundTypeInputs.forEach((inputSoundType) => inputSoundType.checked = elements.inputSelectAll.checked);
-		console.log(elements.inputSelectAll.indeterminate);
-	}
+	function inputSelectAllOnChange() { divSoundTypeInputs.forEach((inputSoundType) => inputSoundType.checked = elements.inputSelectAll.checked); }
 
 	function inputSelectAllSetStatus() {
 		const divSoundTypesSelected = Array.prototype.filter.call(divSoundTypeInputs, (inputSoundType) => inputSoundType.checked);

@@ -8,6 +8,12 @@
 	error_reporting(E_ALL); // comment out in prod
 	ini_set("display_errors", 1); // comment out in prod
 
+	if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+		header("Access-Control-Max-Age: 86400");
+		header("Content-Length: 0");
+		exit;
+	}
+
 	try {
 		$requestText = $requestText ?? file_get_contents("php://input");
 		$requestDecoded = json_decode($requestText);

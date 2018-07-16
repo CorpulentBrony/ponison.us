@@ -2,15 +2,22 @@
 	// https://trac.ffmpeg.org/wiki/Concatenate - using the demux; generate temp file with list of fiels and then process the command
 	// this is another alternative but command line could get too long ffmpeg -i "concat:breath_s1e01_001.mp3|breath_s1e01_002.mp3" -c copy test1.mp3
 	class AudioGenerator implements \JsonSerializable {
-		private $desiredLengthSeconds; // int
+		const FFMPEG_CMD = "/usr/local/bin/ffmpeg -f concat -safe 0 -i %s -c copy %s";
+		const OUTPUT_DIR = __DIR__ . "/../../output/";
+		const RM_CMD = "sh 'sleep 300 && rm %s' > /dev/null 2>&1 &";
+		const SILENT_AUDIO_FILE = __DIR__ . "/../../audio/silence.mp3";
+
+		private $desiredLengthDeciseconds; // int
+		private $length = 0; // int
 		private $minDelayDeciseconds; // int
 		private $maxDelayDeciseconds; // int
 		private $outputFormat; // int
 		private $ponies = []; // array
+		private $soundTypeFiles = []; // [\SplFileInfo]
 
 		public function __construct(array $request) {
 			require_once "PonyList.php";
-			$this->desiredLengthSeconds = $request["desiredLengthSeconds"];
+			$this->desiredLengthDeciseconds = $request["desiredLengthSeconds"] * 10;
 			$this->minDelayDeciseconds = $request["minDelayDeciseconds"];
 			$this->maxDelayDeciseconds = $request["maxDelayDeciseconds"];
 			$this->outputFormat = $request["outputFormat"];
@@ -19,17 +26,54 @@
 				$ponyName = $pony->getName();
 
 				if (in_array($ponyName, $request["ponies"], true)) {
-					$ponies[$ponyName]["fileinfo"] = $pony;
-					$ponies[$ponyName]["soundTypes"] = $pony->getSoundTypeList($request["soundTypes"]);
+					$ponies[$ponyName] = $pony;
+
+					foreach ($pony->getSoundTypeList($request["soundTypes"]) as $soundTypeList)
+						array_splice($this->soundTypeFiles, count($this->soundTypeFiles), 0, $soundTypeList->getSoundTypeFiles());
 				}
 				return $ponies;
 			}, []);
-			var_dump($this->ponies);
+		}
+
+		public function generate() {
+			$fileList = new \Ds\Vector();
+			$fileList->allocate($this->desiredLengthDeciseconds);
+			$i = 0;
+			$numSoundTypeFiles = count($this->soundTypeFiles);
+			$silentAudio = new \SplFileInfo(realpath(self::SILENT_AUDIO_FILE));
+			array_shuffle($this->soundTypeFiles);
+
+			while ($this->length < $this->desiredLengthDeciseconds) {
+				if ($i >= $numSoundTypeFiles) {
+					array_shuffle($this->soundTypeFiles);
+					$i = 0;
+				}
+				$delay = $this->getDelayDeciseconds();
+				$fileList = $fileList->merge(array_fill(0, $delay, $silentAudio->getPathname()));
+				$fileList->push($this->soundTypeFiles[$i++]->getPathname());
+				$this->length += $delay + 10;
+			}
+			$tempFile = tmpfile();
+			$tempFileName = stream_get_meta_data($tempFile)["uri"];
+			$outputFileName = realpath(self::OUTPUT_DIR) . "/" . basename($tempFileName) . ".mp3";
+			fwrite($tempFile, "file '{$fileList->join("'\nfile '")}'");
+			exec(sprintf(self::FFMPEG_CMD, escapeshellarg($tempFileName), escapeshellarg($outputFileName)));
+			exec(sprintf(self::RM_CMD, escapeshellarg($outputFileName)));
+			fclose($tempFile);
 		}
 
 		private function getDelayDeciseconds(): int { return random_int($this->minDelayDeciseconds, $this->maxDelayDeciseconds); }
 
 		public function jsonSerialize() { return "you are serializing an AudioGenerator"; }
+	}
+
+	function array_shuffle(array &$array) {
+		$i = count($array);
+
+		while (0 !== $i) {
+			$j = random_int(0, $i-- - 1);
+			list($array[$i], $array[$j]) = [$array[$j], $array[$i]];	
+		}
 	}
 
 	class Request {
@@ -89,7 +133,7 @@
 		}
 
 		public function fulfillAudio() {
-			$response = new Response(new AudioGenerator([
+			$audioGenerator = new AudioGenerator([
 				"desiredLengthSeconds" => $this->desiredLengthSeconds, 
 				"minDelayDeciseconds" => $this->minDelayDeciseconds, 
 				"maxDelayDeciseconds" => $this->maxDelayDeciseconds, 
@@ -97,7 +141,9 @@
 				"ponies" => $this->ponies,
 				"ponyListFileinfo" => $this->getPonyListFileinfo(),
 				"soundTypes" => $this->soundTypes
-			]));
+			]);
+			$audioGenerator->generate();
+			$response = new Response($audioGenerator);
 			$response->output();
 		}
 
