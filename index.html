@@ -117,7 +117,7 @@
 				<label for="select-ponies">Select a pony</label>
 				<select autocomplete="name" id="select-ponies" required></select>
 			</div>
-			<fieldset>
+			<fieldset id="fieldset-sound-types">
 				<legend>Select sound type(s)</legend>
 				<span>
 					<input id="input-select-all" type="checkbox">
@@ -129,15 +129,15 @@
 			</fieldset>
 			<div>
 				<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
-				<input id="input-desired-length-seconds" inputmode="numeric" max="3600" maxlength="4" min="1" required value="60">
+				<input id="input-desired-length-seconds" inputmode="numeric" max="3600" maxlength="4" min="1" required value="90">
 			</div>
 			<div>
 				<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
-				<input id="input-min-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="5">
+				<input id="input-min-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="2">
 			</div>
 			<div>
 				<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
-				<input id="input-max-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="10">
+				<input id="input-max-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="8">
 			</div>
 			<div>
 				<label for="select-output-format">Output Format</label>
@@ -146,6 +146,26 @@
 				</select>
 			</div>
 			<button id="button-get-audio" required type="button">Get Audio</button>
+			<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio"></output>
 		</form>
+		<template id="template-sound-type">
+			<span>
+				<input checked type="checkbox">
+				<label></label>
+			</span>
+		</template>
+		<template id="template-output-audio">
+			<ul>
+				<li>
+					<ul>
+						<li><a download type="audio/mpeg">Download Result</a></li>
+						<li>Audio file is <time id="time-duration"></time> long and <data id="data-size"></data> large and will be available for download for <time id="time-lifetime"></time></li>
+					</ul>
+				</li>
+				<li>It took <time id="time-processing"></time> to generate the sound file</li>
+				<li>There were <data id="data-used-sound-types"></data> sound types used out of the total possible <data id="data-total-sound-types"></data> (<data id="data-percent-of-total"></data> of total)</li>
+			</ul>
+			<code></code>
+		</template>
 	</body>
 </html>

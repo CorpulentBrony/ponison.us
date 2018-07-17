@@ -9,9 +9,12 @@
 		inputMaxDelaySeconds: undefined, 
 		inputMinDelaySeconds: undefined, 
 		inputSelectAll: undefined,
+		outputAudio: undefined,
 		scriptList: undefined, 
 		selectOutputFormat: undefined, 
-		selectPonies: undefined
+		selectPonies: undefined,
+		templateOutputAudio: undefined,
+		templateSoundType: undefined
 	};
 	const isDocumentLoaded = new window.Promise((resolve) => {
 		if (window.document.readyState === "loading")
@@ -23,12 +26,16 @@
 	let divSoundTypeInputs = undefined;
 
 	function addSoundTypeToList(parent, ponyName, soundType) {
-		const span = createElement("span", {}, parent);
 		const inputId = `input-${soundType.name.toLowerCase()}`;
-		createElement("input", { id: inputId, type: "checkbox", value: soundType.name }, span);
-		const label = createElement("label", { for: inputId }, span, `${soundType.name} (`);
+		const soundTypeItem = window.document.importNode(elements.templateSoundType.content, true);
+		const input = soundTypeItem.querySelector("input");
+		const label = soundTypeItem.querySelector("label");
+		[input.id, input.value] = [inputId, soundType.name];
+		label.setAttribute("for", inputId);
+		label.textContent = `${soundType.name} (`;
 		createElement("a", { href: window.encodeURI(`/pony/${ponyName}/${soundType.name}/`), target: "_blank", type: "text/html" }, label, soundType.numberAvailable);
 		label.appendChild(window.document.createTextNode(")"));
+		parent.appendChild(soundTypeItem);
 	}
 
 	function buttonGetAudioOnClick() {
@@ -42,8 +49,8 @@
 			soundTypes: getSelectedSoundTypes()
 		});
 		fetch(API_URL, { body, headers: { ["Content-Type"]: "application/json" }, method: "POST" })
-			.then((response) => response.text())
-			.then(console.log)
+			.then((response) => response.json())
+			.then(processResponse)
 			.catch(console.error);
 	}
 
@@ -97,13 +104,40 @@
 		window.Object.assign(elements.inputSelectAll, state);
 	}
 
+	function processResponse(response) {
+		console.log(response);
+		const templateOutputAudio = window.document.importNode(elements.templateOutputAudio.content, true);
+		const a = templateOutputAudio.querySelector("a");
+		[a.download, a.href] = [`PoniSonus ${elements.selectPonies.value} ${window.Math.floor((window.Math.random() + 1) * 0x1000000).toString(32).substring(1)}.mp3`, `//api.ponison.us/${response.outputFile.url}`];
+		const data = templateOutputAudio.querySelectorAll("data");
+		//const time = templateOutputAudio.querySelectorAll("time");
+		
+
+		templateOutputAudio.querySelector("code").textContent = JSON.stringify(response);
+		elements.outputAudio.appendChild(templateOutputAudio);
+		// <ul>
+		// 	<li>
+		// 		<ul>
+		// 			<li><a download type="audio/mpeg">Download Result</a></li>
+		// 			<li>Audio file is <time id="time-duration"></time> long and <data id="data-size"></data> large and will be available for download for <time id="time-lifetime"></time></li>
+		// 		</ul>
+		// 	</li>
+		// 	<li>It took <time id="time-processing"></time> to generate the sound file</li>
+		// 	<li>There were <data id="data-used-sound-types"></data> sound types used out of the total possible <data id="data-total-sound-types"></data> (<data id="data-percent-of-total"></data> of total)</li>
+		// </ul>
+		// <code></code>
+	}
+
 	function removeAllChildren(node) {
 		while (node.firstChild)
 			node.removeChild(node.firstChild);
 		return node;
 	}
 
-	function selectPoniesOnChange() { removeAllChildren(elements.divSoundTypes).appendChild(soundTypeOptionsMap.get(elements.selectPonies.value).cloneNode(true)); }
+	function selectPoniesOnChange() {
+		removeAllChildren(elements.divSoundTypes).appendChild(soundTypeOptionsMap.get(elements.selectPonies.value).cloneNode(true));
+		elements.inputSelectAll.checked = true;
+	}
 
 	function setAttributes(element, attributes = {}) {
 		for (const key in attributes)
