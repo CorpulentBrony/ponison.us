@@ -12,7 +12,7 @@
 		const UNKNOWN_REQUEST_TYPE_MESSAGE = "Unknown request type, do not know how to fulfill requests of type %s";
 		const UNSUPPLIED_REQUEST_TYPE_MESSAGE = "Request type not supplied";
 		const UNSUPPLIED_VALUE_MESSAGE = "You must select at least one %s";
-		const VALID_OUTPUT_FORMATS = ["mp3"];
+		const VALID_OUTPUT_FORMATS = ["mp3" => "audio/mpeg"];
 		const VALID_REQUEST_TYPES = ["audio", "list"];
 
 		private $requestType; // string
@@ -66,14 +66,20 @@
 				"ponyListFileinfo" => $this->getPonyListFileinfo(),
 				"soundTypes" => $this->soundTypes
 			]);
-			$response = new Response($audioGenerator->generate());
+			$response = new Response($this->requestType, $audioGenerator->generate());
 			$response->output();
 		}
 
 		public function fulfillList() {
 			require_once "PonyList.php";
-			$response = new Response(new PonyList($this->getPonyListFileinfo()));
-			$response->output();
+			$response = new Response($this->requestType, new PonyList($this->getPonyListFileinfo()));
+			$response->output([
+				"defaultOutputFormat" => self::DEFAULT_OUTPUT_FORMAT, 
+				"maxDesiredLengthSeconds" => self::MAX_DESIRED_LENGTH_SECONDS, 
+				"minDelaySeconds" => self::MIN_DELAY_SECONDS, 
+				"minDesiredLengthSeconds" => self::MIN_DESIRED_LENGTH_SECONDS, 
+				"validOutputFormats" => self::VALID_OUTPUT_FORMATS
+			]);
 		}
 
 		private function getPonyListFileinfo(): \SplFileInfo { return new \SplFileInfo(realpath(self::PONY_DIR)); }
@@ -89,7 +95,7 @@
 		private function setDesiredLengthSeconds(int $desiredLengthSeconds) { $this->desiredLengthSeconds = min(max($desiredLengthSeconds, self::MIN_DESIRED_LENGTH_SECONDS), self::MAX_DESIRED_LENGTH_SECONDS); }
 
 		private function setOutputFormat(string $outputFormat) {
-			if (!in_array($outputFormat, self::VALID_OUTPUT_FORMATS, true))
+			if (!array_key_exists($outputFormat, self::VALID_OUTPUT_FORMATS))
 				$outputFormat = self::DEFAULT_OUTPUT_FORMAT;
 			$this->outputFormat = $outputFormat;
 		}

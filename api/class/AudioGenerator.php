@@ -1,12 +1,4 @@
 <?php
-	// https://trac.ffmpeg.org/wiki/Concatenate - using the demux; generate temp file with list of fiels and then process the command
-	// this is another alternative but command line could get too long ffmpeg -i "concat:breath_s1e01_001.mp3|breath_s1e01_002.mp3" -c copy test1.mp3
-	// generate file
-	// send response to browser
-	// in js, download file from url given in response
-	// in js, create link to manually download file in case automatic downloading does not work
-	// set link to expire when lifetime number of seconds given in response have elapsed
-	// job to check output directory and erase old files periodically
 	class AudioGenerator implements \JsonSerializable {
 		const FILE_BITRATE = 160000;
 		const FFMPEG_CMD = "/usr/local/bin/ffmpeg -f concat -safe 0 -i %s -c copy %s";
@@ -17,7 +9,7 @@
 
 		private $desiredLengthDeciseconds; // int
 		private $generationTimeElapsedSeconds; // string
-		private $length = 0; // int
+		private $length = "0"; // string
 		private $minDelayDeciseconds; // int
 		private $maxDelayDeciseconds; // int
 		private $numberSoundTypesUsed; // int
@@ -26,9 +18,18 @@
 		private $ponies = []; // array
 		private $soundTypeFiles = []; // [\SplFileInfo]
 		private $soundTypeFilesUsed; // \Ds\Set
+		private $timingLog; // [[]]
 
 		private static function calculateDurationDeciseconds($fileSizeBytes): string { return bcmul(self::calculateDurationSeconds($fileSizeBytes), "10", 6); }
 		private static function calculateDurationSeconds($fileSizeBytes): string { return bcdiv(bcmul(strval($fileSizeBytes), "8", 6), strval(self::FILE_BITRATE), 6); }
+
+		// this should be re-written for bcmath since that is where this is coming from
+		public static function formatSeconds($seconds) {
+			$hours = $seconds / 3600 >> 0;
+			$minutes = $seconds % 3600 / 60 >> 0;
+			$seconds %= 60;
+			return (($hours > 0) ? sprintf("%02d:", $hours) : "") . sprintf("%02d:%06.3f", $minutes, $seconds);
+		}
 
 		public static function getTime(): string {
 			bcscale(6);
@@ -57,28 +58,35 @@
 
 		public function generate(): self {
 			require_once __DIR__ . "/../include/array.php";
+			require_once __DIR__ . "/../include/bcmath.php";
+			bcscale(6);
 			$startTime = self::getTime();
 			$fileList = new \Ds\Vector();
 			$fileList->allocate($this->desiredLengthDeciseconds);
+			$desiredLengthDeciseconds = strval($this->desiredLengthDeciseconds);
 			$i = 0;
 			$numSoundTypeFiles = count($this->soundTypeFiles);
 			$silentAudio = new \SplFileInfo(realpath(self::SILENT_AUDIO_FILE));
 			$this->numberSoundTypesUsed = 0;
 			$this->soundTypeFilesUsed = new \Ds\Set();
+			$this->timingLog = [];
 			array_shuffle($this->soundTypeFiles);
 
-			while ($this->length < $this->desiredLengthDeciseconds) {
+			while (bccomp($this->length, $desiredLengthDeciseconds) < 0) {
 				if ($i >= $numSoundTypeFiles) {
 					array_shuffle($this->soundTypeFiles);
 					$i = 0;
 				}
-				$delay = $this->getDelayDeciseconds();
+				$delay = random_int($this->minDelayDeciseconds, max(min($this->maxDelayDeciseconds, intval(bcsub($desiredLengthDeciseconds, $this->length, 0))), $this->minDelayDeciseconds));
 				$fileList = $fileList->merge(array_fill(0, $delay, $silentAudio->getPathname()));
+				$this->length = bcadd($this->length, strval($delay), 6);
+				$lengthDeciseconds = self::calculateDurationDeciseconds($this->soundTypeFiles[$i]->getSize());
 				$soundTypeFilePath = $this->soundTypeFiles[$i]->getPathname();
-				$fileList->push($soundTypeFilePath);
-				$this->length += $delay + intval(explode(".", self::calculateDurationDeciseconds($this->soundTypeFiles[$i]->getSize()))[0]);
+				$soundTypeFileUrl = substr($soundTypeFilePath, strlen(realpath(__DIR__ . "/../../")));
+				$fileList[] = $soundTypeFilePath;
+				$this->timingLog[] = ["begin" => $this->length, "end" => $this->length = bcadd($this->length, $lengthDeciseconds, 6), "file" => $soundTypeFileUrl, "name" => basename($this->soundTypeFiles[$i]->getPath())];
 				$this->numberSoundTypesUsed++;
-				$this->soundTypeFilesUsed->add(substr($soundTypeFilePath, strlen(realpath(__DIR__ . "/../../"))));
+				$this->soundTypeFilesUsed->add($soundTypeFileUrl);
 				$i++;
 			}
 			$tempFile = tmpfile();
@@ -92,21 +100,30 @@
 			return $this;
 		}
 
-		private function getDelayDeciseconds(): int { return random_int($this->minDelayDeciseconds, $this->maxDelayDeciseconds); }
 		private function getOutputFileDurationSeconds(): string { return self::calculateDurationSeconds($this->getOutputFileSizeBytes()); }
 		private function getOutputFileSizeBytes(): int { return filesize($this->outputFilePath); }
+		// https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API
+		// base64 encode?  or we can do that on JS side and just return the text here, maybe use array.  this is why i am doing timingLog
+		private function getWebVtt(): string {
+			return array_reduce($this->timingLog, function(string $webVtt, array $entry): string {
+				$webVtt .= \PHP_EOL . \PHP_EOL . $entry["file"] . \PHP_EOL;
+				$webVtt .= self::formatSeconds(bcdiv($entry["begin"], "10")) . " --> " . self::formatSeconds(bcdiv($entry["end"], "10")) . \PHP_EOL;
+				return "{$webVtt}- {$entry["name"]}";
+			}, "WEBVTT ");
+		}
 
 		public function jsonSerialize() {
 			return [
-				"generationTimeElapsedSeconds" => $this->generationTimeElapsedSeconds, 
+				"generationTimeElapsedSeconds" => bcadd($this->generationTimeElapsedSeconds, "0", 3), 
 				"numberSoundTypesUsed" => $this->numberSoundTypesUsed,
 				"outputFile" => [
-					"durationSeconds" => $this->getOutputFileDurationSeconds(),
+					"durationSeconds" => bcdiv($this->length, "10", 3), //bcadd($this->getOutputFileDurationSeconds(), "0", 3),
 					"lifetimeSeconds" => self::OUTPUT_LIFETIME_SECONDS,
 					"sizeBytes" => $this->getOutputFileSizeBytes(),
 					"url" => substr($this->outputFilePath, strlen($_SERVER["DOCUMENT_ROOT"]))
 				],
 				"soundTypeFilesUsed" => $this->soundTypeFilesUsed,
+				"timingLog" => $this->getWebVtt(),
 				"totalSoundTypesSelected" => count($this->soundTypeFiles)
 			];
 		}

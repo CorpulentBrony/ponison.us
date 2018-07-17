@@ -29,6 +29,7 @@
 		<title><!--# echo var="title" --></title>
 		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
 		<style nonce="<!--# echo var="nonce" -->">
+			audio { display: block; }
 			.ponisonus-inline-list {
 				display: inline-block;
 				list-style: none;
@@ -127,23 +128,24 @@
 					If you see this message, then either you have JavaScript disabled or your browser is not supported.  Try the newest version of <a href="https://www.google.com/chrome/browser/" rel="external noopener" target="_blank" type="text/html">Chrome</a> or <a href="https://www.mozilla.org/firefox" rel="external noopener" target="_blank" type="text/html">Firefox</a>.
 				</div>
 			</fieldset>
-			<div>
-				<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
-				<input id="input-desired-length-seconds" inputmode="numeric" max="3600" maxlength="4" min="1" required value="90">
-			</div>
-			<div>
-				<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
-				<input id="input-min-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="2">
-			</div>
-			<div>
-				<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
-				<input id="input-max-delay-seconds" inputmode="decimal" max="3600" maxlength="6" min="0" required step="0.1" value="8">
-			</div>
+			<fieldset id="fieldset-timing">
+				<legend>Timing</legend>
+				<div>
+					<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
+					<input id="input-desired-length-seconds" inputmode="numeric" required value="90">
+				</div>
+				<div>
+					<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
+					<input id="input-min-delay-seconds" inputmode="decimal" required step="0.1" value="2">
+				</div>
+				<div>
+					<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
+					<input id="input-max-delay-seconds" inputmode="decimal" required step="0.1" value="8">
+				</div>
+			</fieldset>
 			<div>
 				<label for="select-output-format">Output Format</label>
-				<select id="select-output-format" required>
-					<option>mp3</option>
-				</select>
+				<select id="select-output-format" required></select>
 			</div>
 			<button id="button-get-audio" required type="button">Get Audio</button>
 			<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio"></output>
@@ -155,15 +157,14 @@
 			</span>
 		</template>
 		<template id="template-output-audio">
+			<video controls loop preload="auto">
+				<track default kind="captions">
+				Your browser does not support HTML5 audio, but you can download the audio file <a download type="audio/mpeg">here</a>.
+			</video>
 			<ul>
-				<li>
-					<ul>
-						<li><a download type="audio/mpeg">Download Result</a></li>
-						<li>Audio file is <time id="time-duration"></time> long and <data id="data-size"></data> large and will be available for download for <time id="time-lifetime"></time></li>
-					</ul>
-				</li>
+				<li>Audio is <time id="time-duration"></time> long, is <data id="data-size"></data> and will be available for download for <time id="time-lifetime"></time></li>
 				<li>It took <time id="time-processing"></time> to generate the sound file</li>
-				<li>There were <data id="data-used-sound-types"></data> sound types used out of the total possible <data id="data-total-sound-types"></data> (<data id="data-percent-of-total"></data> of total)</li>
+				<li>There were <data id="data-used-sound-types"></data> used out of the possible <data id="data-total-sound-types"></data> selected (<data id="data-percent-of-total"></data> of total)</li>
 			</ul>
 			<code></code>
 		</template>
