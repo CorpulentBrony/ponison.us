@@ -24,14 +24,10 @@
 		private static function calculateDurationDeciseconds($fileSizeBytes): string { return bcmul(self::calculateDurationSeconds($fileSizeBytes), "10", 6); }
 		private static function calculateDurationSeconds($fileSizeBytes): string { return bcdiv(bcmul(strval($fileSizeBytes), "8", 6), strval(self::FILE_BITRATE), 6); }
 
-		// this should be re-written for bcmath since that is where this is coming from
-		public static function formatSeconds(string $seconds): string {
+		private static function formatSeconds(string $seconds): string {
 			$hours = bcdiv($seconds, "3600", 0);
 			$minutes = bcdiv(bcmod($seconds, "3600", 6), "60", 0);
 			$seconds = bcmod($seconds, "60", 3);
-			// $hours = $seconds / 3600 >> 0;
-			// $minutes = $seconds % 3600 / 60 >> 0;
-			// $seconds %= 60;
 			return ((bccomp($hours, "0") > 0) ? sprintf("%02s:", $hours) : "") . sprintf("%02s:%06s", $minutes, $seconds);
 		}
 
@@ -75,7 +71,6 @@
 			$this->soundTypeFilesUsed = new \Ds\Set();
 			$this->timingLog = [];
 			array_shuffle($this->soundTypeFiles);
-			$this->debug = [];
 
 			while (bccomp($this->length, $desiredLengthDeciseconds) < 0) {
 				if ($i >= $numSoundTypeFiles) {
@@ -84,11 +79,11 @@
 				}
 				$delay = random_int($this->minDelayDeciseconds, max(min($this->maxDelayDeciseconds, intval(bcsub($desiredLengthDeciseconds, $this->length, 0))), $this->minDelayDeciseconds));
 				$fileList = $fileList->merge(array_fill(0, $delay, $silentAudio->getPathname()));
-				$this->length = bcadd($this->length, strval($delay), 6);
+				// found the silence.mp3 file appears to be actually 1.6813 or so deciseconds long, and not actually 1 as intended
+				$this->length = bcadd($this->length, bcmul(strval($delay), "1.6813", 6), 6);
 				$lengthDeciseconds = self::calculateDurationDeciseconds($this->soundTypeFiles[$i]->getSize());
 				$soundTypeFilePath = $this->soundTypeFiles[$i]->getPathname();
 				$soundTypeFileUrl = substr($soundTypeFilePath, strlen(realpath(__DIR__ . "/../../")));
-				$this->debug[] = ["length" => $this->length, "desiredLength" => $desiredLengthDeciseconds, "delay" => $delay, "lengthDeciseconds" => $lengthDeciseconds];
 				$fileList[] = $soundTypeFilePath;
 				$this->timingLog[] = ["begin" => $this->length, "end" => $this->length = bcadd($this->length, $lengthDeciseconds, 6), "file" => $soundTypeFileUrl, "name" => basename($this->soundTypeFiles[$i]->getPath())];
 				$this->numberSoundTypesUsed++;
@@ -109,8 +104,8 @@
 
 		private function getOutputFileDurationSeconds(): string { return self::calculateDurationSeconds($this->getOutputFileSizeBytes()); }
 		private function getOutputFileSizeBytes(): int { return filesize($this->outputFilePath); }
+
 		// https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API
-		// base64 encode?  or we can do that on JS side and just return the text here, maybe use array.  this is why i am doing timingLog
 		private function getWebVtt(): string {
 			return array_reduce($this->timingLog, function(string $webVtt, array $entry): string {
 				$webVtt .= \PHP_EOL . \PHP_EOL . $entry["file"] . \PHP_EOL;
@@ -124,15 +119,14 @@
 				"generationTimeElapsedSeconds" => bcadd($this->generationTimeElapsedSeconds, "0", 3), 
 				"numberSoundTypesUsed" => $this->numberSoundTypesUsed,
 				"outputFile" => [
-					"durationSeconds" => bcdiv($this->length, "10", 3), //bcadd($this->getOutputFileDurationSeconds(), "0", 3),
+					"durationSeconds" => bcadd($this->getOutputFileDurationSeconds(), "0", 3),
 					"lifetimeSeconds" => self::OUTPUT_LIFETIME_SECONDS,
 					"sizeBytes" => $this->getOutputFileSizeBytes(),
 					"url" => substr($this->outputFilePath, strlen($_SERVER["DOCUMENT_ROOT"]))
 				],
 				"soundTypeFilesUsed" => $this->soundTypeFilesUsed,
 				"timingLog" => $this->getWebVtt(),
-				"totalSoundTypesSelected" => count($this->soundTypeFiles), 
-				"debug" => $this->debug
+				"totalSoundTypesSelected" => count($this->soundTypeFiles)
 			];
 		}
 	}

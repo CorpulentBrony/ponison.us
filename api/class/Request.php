@@ -5,7 +5,7 @@
 		const DEFAULT_OUTPUT_FORMAT = "mp3";
 		const DEFAULT_PONIES = ["Twilight Sparkle"];
 		const DEFAULT_SOUND_TYPES = ["Breath"];
-		const MAX_DESIRED_LENGTH_SECONDS = 60 * 60;
+		const MAX_DESIRED_LENGTH_SECONDS = 120;
 		const MIN_DELAY_SECONDS = 0;
 		const MIN_DESIRED_LENGTH_SECONDS = 1;
 		const PONY_DIR = __DIR__ . "/../../pony/";

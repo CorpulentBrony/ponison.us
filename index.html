@@ -7,7 +7,7 @@
 		<meta charset="utf-8">
 		<link href="https://ponison.us/" rel="canonical self" type="text/html">
 		<!-- preloads -->
-		<link as="script" href="/js/index.js" rel="preload" type="application/javascript">
+		<link href="/module/index.js" rel="modulepreload">
 		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
 		<!-- <link as="script" href="//www.google-analytics.com/analytics.js" rel="preload" type="application/javascript"> -->
 		<!-- <link href="/manifest.jsonmanifest" rel="manifest" type="application/manifest+json"> -->
@@ -29,6 +29,11 @@
 		<title><!--# echo var="title" --></title>
 		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
 		<style nonce="<!--# echo var="nonce" -->">
+			:root { --output-min-height: 300px; }
+			output {
+				display: block;
+				min-height: var(--output-min-height);
+			}
 			video {
 				display: block;
 				object-fit: initial;
@@ -52,7 +57,8 @@
 			}
 			#div-sound-types > span, fieldset > span { padding: 0 0.5rem; }
 		</style>
-		<script async defer src="/js/index.js"></script>
+		<script async defer nomodule src="/js/index.js"></script>
+		<script async src="/module/index.js" type="module"></script>
 	</head>
 	<body>
 		<header>
@@ -155,7 +161,22 @@
 				<select id="select-output-format" required></select>
 			</div>
 			<button id="button-get-audio" required type="button">Get Audio</button>
-			<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio"></output>
+			<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio">
+				<style nonce="<!--# echo var="nonce" -->">
+					#div-result-message {
+						align-items: center;
+						display: flex;
+						height: var(--output-min-height);
+					}
+					#div-result-message > svg { width: 100%; }
+				</style>
+				<div id="div-result-message">
+					<!-- <span>Your result will appear here</span> -->
+					<svg viewBox="0 0 300 18">
+						<text x="0" y="15">Your result will appear here</text>
+					</svg>
+				</div>
+			</output>
 		</form>
 		<template id="template-sound-type">
 			<span>
@@ -164,7 +185,7 @@
 			</span>
 		</template>
 		<template id="template-output-audio">
-			<video controls height="450" loop preload="auto" width="800">
+			<video controls height="225" loop preload="auto" width="400">
 				<track default kind="captions">
 				Your browser does not support HTML5 audio, but you can download the audio file <a download type="audio/mpeg">here</a>.
 			</video>
