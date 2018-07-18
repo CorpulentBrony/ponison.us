@@ -5,6 +5,7 @@
 		const OUTPUT_DIR = __DIR__ . "/../output/";
 		const OUTPUT_LIFETIME_SECONDS = 600;
 		const RM_CMD = __DIR__ . "/../../bin/schedule_delete.sh " . AudioGenerator::OUTPUT_LIFETIME_SECONDS . " %s > /dev/null 2>&1 &";
+		const RM_EXCESS_CMD = "cd " . self::OUTPUT_DIR . " && find ./ ! -newer $(ls -t ./ | sed '11!d') -delete";
 		const SILENT_AUDIO_FILE = __DIR__ . "/../../audio/silence.mp3";
 
 		private $desiredLengthDeciseconds; // int
@@ -24,11 +25,14 @@
 		private static function calculateDurationSeconds($fileSizeBytes): string { return bcdiv(bcmul(strval($fileSizeBytes), "8", 6), strval(self::FILE_BITRATE), 6); }
 
 		// this should be re-written for bcmath since that is where this is coming from
-		public static function formatSeconds($seconds) {
-			$hours = $seconds / 3600 >> 0;
-			$minutes = $seconds % 3600 / 60 >> 0;
-			$seconds %= 60;
-			return (($hours > 0) ? sprintf("%02d:", $hours) : "") . sprintf("%02d:%06.3f", $minutes, $seconds);
+		public static function formatSeconds(string $seconds): string {
+			$hours = bcdiv($seconds, "3600", 0);
+			$minutes = bcdiv(bcmod($seconds, "3600", 6), "60", 0);
+			$seconds = bcmod($seconds, "60", 3);
+			// $hours = $seconds / 3600 >> 0;
+			// $minutes = $seconds % 3600 / 60 >> 0;
+			// $seconds %= 60;
+			return ((bccomp($hours, "0") > 0) ? sprintf("%02s:", $hours) : "") . sprintf("%02s:%06s", $minutes, $seconds);
 		}
 
 		public static function getTime(): string {
@@ -71,6 +75,7 @@
 			$this->soundTypeFilesUsed = new \Ds\Set();
 			$this->timingLog = [];
 			array_shuffle($this->soundTypeFiles);
+			$this->debug = [];
 
 			while (bccomp($this->length, $desiredLengthDeciseconds) < 0) {
 				if ($i >= $numSoundTypeFiles) {
@@ -83,6 +88,7 @@
 				$lengthDeciseconds = self::calculateDurationDeciseconds($this->soundTypeFiles[$i]->getSize());
 				$soundTypeFilePath = $this->soundTypeFiles[$i]->getPathname();
 				$soundTypeFileUrl = substr($soundTypeFilePath, strlen(realpath(__DIR__ . "/../../")));
+				$this->debug[] = ["length" => $this->length, "desiredLength" => $desiredLengthDeciseconds, "delay" => $delay, "lengthDeciseconds" => $lengthDeciseconds];
 				$fileList[] = $soundTypeFilePath;
 				$this->timingLog[] = ["begin" => $this->length, "end" => $this->length = bcadd($this->length, $lengthDeciseconds, 6), "file" => $soundTypeFileUrl, "name" => basename($this->soundTypeFiles[$i]->getPath())];
 				$this->numberSoundTypesUsed++;
@@ -95,6 +101,7 @@
 			fwrite($tempFile, "file '{$fileList->join("'\nfile '")}'");
 			exec(sprintf(self::FFMPEG_CMD, escapeshellarg($tempFileName), escapeshellarg($this->outputFilePath)));
 			exec(sprintf(self::RM_CMD, escapeshellarg($this->outputFilePath)));
+			exec(self::RM_EXCESS_CMD);
 			fclose($tempFile);
 			$this->generationTimeElapsedSeconds = bcsub(self::getTime(), $startTime, 6);
 			return $this;
@@ -107,7 +114,7 @@
 		private function getWebVtt(): string {
 			return array_reduce($this->timingLog, function(string $webVtt, array $entry): string {
 				$webVtt .= \PHP_EOL . \PHP_EOL . $entry["file"] . \PHP_EOL;
-				$webVtt .= self::formatSeconds(bcdiv($entry["begin"], "10")) . " --> " . self::formatSeconds(bcdiv($entry["end"], "10")) . \PHP_EOL;
+				$webVtt .= self::formatSeconds(bcdiv($entry["begin"], "10", 6)) . " --> " . self::formatSeconds(bcdiv($entry["end"], "10", 6)) . \PHP_EOL;
 				return "{$webVtt}- {$entry["name"]}";
 			}, "WEBVTT ");
 		}
@@ -124,7 +131,8 @@
 				],
 				"soundTypeFilesUsed" => $this->soundTypeFilesUsed,
 				"timingLog" => $this->getWebVtt(),
-				"totalSoundTypesSelected" => count($this->soundTypeFiles)
+				"totalSoundTypesSelected" => count($this->soundTypeFiles), 
+				"debug" => $this->debug
 			];
 		}
 	}

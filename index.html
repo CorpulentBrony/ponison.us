@@ -29,7 +29,14 @@
 		<title><!--# echo var="title" --></title>
 		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
 		<style nonce="<!--# echo var="nonce" -->">
-			audio { display: block; }
+			video {
+				display: block;
+				object-fit: initial;
+			}
+			::cue {
+				color: black;
+				font-size: 12px;
+			}
 			.ponisonus-inline-list {
 				display: inline-block;
 				list-style: none;
@@ -132,15 +139,15 @@
 				<legend>Timing</legend>
 				<div>
 					<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
-					<input id="input-desired-length-seconds" inputmode="numeric" required value="90">
+					<input id="input-desired-length-seconds" inputmode="numeric" required value="30">
 				</div>
 				<div>
 					<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
-					<input id="input-min-delay-seconds" inputmode="decimal" required step="0.1" value="2">
+					<input id="input-min-delay-seconds" inputmode="decimal" required step="0.1" value="0.5">
 				</div>
 				<div>
 					<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
-					<input id="input-max-delay-seconds" inputmode="decimal" required step="0.1" value="8">
+					<input id="input-max-delay-seconds" inputmode="decimal" required step="0.1" value="1">
 				</div>
 			</fieldset>
 			<div>
@@ -157,7 +164,7 @@
 			</span>
 		</template>
 		<template id="template-output-audio">
-			<video controls loop preload="auto">
+			<video controls height="450" loop preload="auto" width="800">
 				<track default kind="captions">
 				Your browser does not support HTML5 audio, but you can download the audio file <a download type="audio/mpeg">here</a>.
 			</video>
