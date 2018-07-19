@@ -7,7 +7,11 @@
 		<meta charset="utf-8">
 		<link href="https://ponison.us/" rel="canonical self" type="text/html">
 		<!-- preloads -->
-		<link href="/module/index.js" rel="modulepreload">
+		<link href="/module/util.mjs" rel="modulepreload">
+		<link href="/module/Elements.mjs" rel="modulepreload">
+		<link href="/module/Form.mjs" rel="modulepreload">
+		<link href="/module/Response.mjs" rel="modulepreload">
+		<link href="/module/SoundType.mjs" rel="modulepreload">
 		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
 		<!-- <link as="script" href="//www.google-analytics.com/analytics.js" rel="preload" type="application/javascript"> -->
 		<!-- <link href="/manifest.jsonmanifest" rel="manifest" type="application/manifest+json"> -->
@@ -29,15 +33,11 @@
 		<title><!--# echo var="title" --></title>
 		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
 		<style nonce="<!--# echo var="nonce" -->">
-			:root { --output-min-height: 300px; }
-			output {
-				display: block;
-				min-height: var(--output-min-height);
-			}
-			video {
+			audio {
 				display: block;
 				object-fit: initial;
 			}
+			output { display: block; }
 			::cue {
 				color: black;
 				font-size: 12px;
@@ -56,145 +56,147 @@
 				flex-wrap: wrap;
 			}
 			#div-sound-types > span, fieldset > span { padding: 0 0.5rem; }
+			#ul-output-audio { list-style: none; }
 		</style>
-		<script async defer nomodule src="/js/index.js"></script>
-		<script async src="/module/index.js" type="module"></script>
+		<script async nomodule src="/js/index.js"></script>
+		<script async src="/module/index.mjs" type="module"></script>
+		<!-- <script async defer src="/module/index.mjs"></script> -->
 	</head>
 	<body>
-		<header>
-			<h1><!--# echo var="title" --></h1>
-			<p><!--# echo var="description" --></p>
-			<p>
-				To see current progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a> and the <a href="//trello.com/b/5QZzxXFt/ponisonus" rel="external noopener" target="_blank" type="text/html">Trello board</a>.  Please keep checking back.
-			</p>
-		</header>
-		<section>
-			<p>
+		<main>
+			<section>
 				<header>
-					For now, you can at least listen to the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
+					<h1><!--# echo var="title" --></h1>
+					<p><!--# echo var="description" --></p>
+					<p>
+						Everything is working now!  It may still look ugly and there may still be some bugs, but you can generate audio files, they will load into the browser, and you can download them!  To see current codebase progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a>.
+					</p>
 				</header>
-				<ul>
-					<li>
-						Season 1:
-						<ul class="ponisonus-inline-list">
-							<li><a href="//www.youtube.com/watch?v=r-iTJkKZaKE" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-							<li><a href="//media.pone.tube/twivoice/s1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+				<section>
+					<header>
+						<h2>Sound Generator</h2>
+						<aside>
+							You can also <a href="/pony/" target="_blank" type="text/html">browse</a> the currently available sounds.
+						</aside>
+					</header>
+					<!-- To prevent a call to the API client side on load, just load the file virtually from the server using an internal proxy into a JSON script object -->
+					<script id="script-list" type="application/json"><!--# include virtual="/list" --></script>
+					<form autocomplete="on" id="form-request" name="form-request">
+						<div>
+							<label for="select-ponies">Select a pony</label>
+							<select autocomplete="name" id="select-ponies" required></select>
+						</div>
+						<fieldset id="fieldset-sound-types">
+							<legend>Select sound type(s)</legend>
+							<span>
+								<input id="input-select-all" type="checkbox">
+								<label for="input-select-all">Select All</label>
+							</span>
+							<div id="div-sound-types">
+								If you see this message, then either you have JavaScript disabled or your browser is not supported.  Try the newest version of <a href="https://www.google.com/chrome/browser/" rel="external noopener" target="_blank" type="text/html">Chrome</a> or <a href="https://www.mozilla.org/firefox" rel="external noopener" target="_blank" type="text/html">Firefox</a>.
+							</div>
+						</fieldset>
+						<fieldset id="fieldset-timing">
+							<legend>Timing</legend>
+							<div>
+								<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
+								<input id="input-desired-length-seconds" inputmode="numeric" required value="30">
+							</div>
+							<div>
+								<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
+								<input id="input-min-delay-seconds" inputmode="decimal" required step="0.1" value="0.5">
+							</div>
+							<div>
+								<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
+								<input id="input-max-delay-seconds" inputmode="decimal" required step="0.1" value="1">
+							</div>
+						</fieldset>
+						<div>
+							<label for="select-output-format">Output Format</label>
+							<select id="select-output-format" required></select>
+						</div>
+						<fieldset>
+							<legend>Result</legend>
+							<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio">
+								Select a pony, the sound types you want to include, the output format, and set your timing options then click the button below to generate the audio.
+							</output>
+						</fieldset>
+						<button id="button-get-audio" required type="button">Get Audio</button>
+					</form>
+				</section>
+			</section>
+			<aside>
+				<nav>
+					<p>
+						<header>
+							<h2>Source Audio</h2>
+							The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
+						</header>
+						<ul>
+							<li>
+								Season 1:
+								<ul class="ponisonus-inline-list">
+									<li><a href="//www.youtube.com/watch?v=r-iTJkKZaKE" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+									<li><a href="//media.pone.tube/twivoice/s1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+								</ul>
+							</li>
+							<li>
+								Season 2:
+								<ul class="ponisonus-inline-list">
+									<li><a href="//www.dailymotion.com/video/x6gh6nv" rel="external noopener" target="_blank" type="text/html">Watch on DailyMotion</a></li>
+									<li><a href="//media.pone.tube/twivoice/s2.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+								</ul>
+							</li>
+							<li>
+								Season 3:
+								<ul class="ponisonus-inline-list">
+									<li><a href="//www.youtube.com/watch?v=B2Of7jztD6g" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+									<li><a href="//media.pone.tube/twivoice/s3.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+									<li><a href="//media.pone.tube/twivoice/s3.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
+								</ul>
+							</li>
+							<li>
+								Season 4:
+								<ul class="ponisonus-inline-list">
+									<li><a href="//www.youtube.com/watch?v=zhPoLBpx8pg" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+									<li><a href="//media.pone.tube/twivoice/s4.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+									<li><a href="//media.pone.tube/twivoice/s4.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
+								</ul>
+							</li>
+							<li>
+								Equestria Girls (movie):
+								<ul class="ponisonus-inline-list">
+									<li><a href="//www.youtube.com/watch?v=xfCNED1OQFI" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+									<li><a href="//media.pone.tube/twivoice/eqg1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+								</ul>
+							</li>
+							<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
 						</ul>
-					</li>
-					<li>
-						Season 2:
-						<ul class="ponisonus-inline-list">
-							<li><a href="//www.dailymotion.com/video/x6gh6nv" rel="external noopener" target="_blank" type="text/html">Watch on DailyMotion</a></li>
-							<li><a href="//media.pone.tube/twivoice/s2.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-						</ul>
-					</li>
-					<li>
-						Season 3:
-						<ul class="ponisonus-inline-list">
-							<li><a href="//www.youtube.com/watch?v=B2Of7jztD6g" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-							<li><a href="//media.pone.tube/twivoice/s3.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-							<li><a href="//media.pone.tube/twivoice/s3.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
-						</ul>
-					</li>
-					<li>
-						Season 4:
-						<ul class="ponisonus-inline-list">
-							<li><a href="//www.youtube.com/watch?v=zhPoLBpx8pg" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-							<li><a href="//media.pone.tube/twivoice/s4.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-							<li><a href="//media.pone.tube/twivoice/s4.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
-						</ul>
-					</li>
-					<li>
-						Equestria Girls (movie):
-						<ul class="ponisonus-inline-list">
-							<li><a href="//www.youtube.com/watch?v=xfCNED1OQFI" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-							<li><a href="//media.pone.tube/twivoice/eqg1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-						</ul>
-					</li>
-					<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-				</ul>
-			</p>
-		</section>
-		<section>
-			<header><h2>Testing Sandbox</h2></header>
-			<p>
-				Yeah, it's a bit unorthodox, but I'm going to be developing the app live, so don't expect anything here to actually <em>work</em> yet.
-			</p>
-			<p>
-				You can also <a href="/pony/" target="_blank" type="text/html">browse</a> the currently available sounds.
-			</p>
-			<!-- To prevent a call to the API client side on load, just load the file virtually from the server using an internal proxy into a JSON script object -->
-			<script id="script-list" type="application/json"><!--# include virtual="/list" --></script>
-		</section>
-		<form autocomplete="on" id="form-request" name="form-request">
-			<div>
-				<label for="select-ponies">Select a pony</label>
-				<select autocomplete="name" id="select-ponies" required></select>
-			</div>
-			<fieldset id="fieldset-sound-types">
-				<legend>Select sound type(s)</legend>
-				<span>
-					<input id="input-select-all" type="checkbox">
-					<label for="input-select-all">Select All</label>
-				</span>
-				<div id="div-sound-types">
-					If you see this message, then either you have JavaScript disabled or your browser is not supported.  Try the newest version of <a href="https://www.google.com/chrome/browser/" rel="external noopener" target="_blank" type="text/html">Chrome</a> or <a href="https://www.mozilla.org/firefox" rel="external noopener" target="_blank" type="text/html">Firefox</a>.
-				</div>
-			</fieldset>
-			<fieldset id="fieldset-timing">
-				<legend>Timing</legend>
-				<div>
-					<label for="input-desired-length-seconds">Desired length (estimate, seconds)</label>
-					<input id="input-desired-length-seconds" inputmode="numeric" required value="30">
-				</div>
-				<div>
-					<label for="input-min-delay-seconds">Min Delay Between Sounds (seconds)</label>
-					<input id="input-min-delay-seconds" inputmode="decimal" required step="0.1" value="0.5">
-				</div>
-				<div>
-					<label for="input-max-delay-seconds">Max Delay Between Sounds (seconds)</label>
-					<input id="input-max-delay-seconds" inputmode="decimal" required step="0.1" value="1">
-				</div>
-			</fieldset>
-			<div>
-				<label for="select-output-format">Output Format</label>
-				<select id="select-output-format" required></select>
-			</div>
-			<button id="button-get-audio" required type="button">Get Audio</button>
-			<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio">
-				<style nonce="<!--# echo var="nonce" -->">
-					#div-result-message {
-						align-items: center;
-						display: flex;
-						height: var(--output-min-height);
-					}
-					#div-result-message > svg { width: 100%; }
-				</style>
-				<div id="div-result-message">
-					<!-- <span>Your result will appear here</span> -->
-					<svg viewBox="0 0 300 18">
-						<text x="0" y="15">Your result will appear here</text>
-					</svg>
-				</div>
-			</output>
-		</form>
+					</p>
+				</nav>
+			</aside>
+		</main>
+		<template id="template-output-audio">
+			<audio controls height="225" loop preload="auto" width="400">
+				<track default kind="captions">
+				Your browser does not support <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement" rel="external noopener" target="_blank" type="text/html">HTML5 media elements</a>, but you can download the audio file using the link below.
+			</audio>
+			<ul id="ul-output-audio">
+				<li><a id="a-download" download>Download audio 🐎</a></li>
+				<li><data id="data-size"></data> 🕒 <time id="time-duration"></time></li>
+				<li>There were <data id="data-used-sound-types"></data> used out of the possible <data id="data-total-sound-types"></data> selected (<data id="data-percent-of-total"></data> of total)</li>
+				<li>Processing time: <time id="time-processing"></time></li>
+			</ul>
+			<details>
+				<summary>View result object (for nerds)</summary>
+				<code></code>
+			</details>
+		</template>
 		<template id="template-sound-type">
 			<span>
 				<input checked type="checkbox">
 				<label></label>
 			</span>
-		</template>
-		<template id="template-output-audio">
-			<video controls height="225" loop preload="auto" width="400">
-				<track default kind="captions">
-				Your browser does not support HTML5 audio, but you can download the audio file <a download type="audio/mpeg">here</a>.
-			</video>
-			<ul>
-				<li>Audio is <time id="time-duration"></time> long, is <data id="data-size"></data> and will be available for download for <time id="time-lifetime"></time></li>
-				<li>It took <time id="time-processing"></time> to generate the sound file</li>
-				<li>There were <data id="data-used-sound-types"></data> used out of the possible <data id="data-total-sound-types"></data> selected (<data id="data-percent-of-total"></data> of total)</li>
-			</ul>
-			<code></code>
 		</template>
 	</body>
 </html>

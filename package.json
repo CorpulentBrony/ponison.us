@@ -2,7 +2,7 @@
   "name": "ponison.us",
   "version": "1.0.0",
   "description": "[This site](https://ponison.us) represents a crazy idea I had to allow for the creation of customized sound files with selected sounds randomly interspersed according to the user's settings on file generation. I think it just may be crazy enough to work if I put in the effort to generate the sound stubs (which will likely not be available via github, sorry).",
-  "browser": "module/index.js",
+  "browser": "module/index.mjs",
   "scripts": {
     "start": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
