@@ -1,0 +1,12 @@
+#!/bin/bash
+
+## use --style compressed or expanded
+find "scss/" -maxdepth 1 -iname "[a-z]*.scss" -type f -exec sh -c 'scss --style compressed --default-encoding UTF-8 "{}" css/$(basename "{}" ".scss").css' \;;
+echo -e "\e[35m SCSS build finished \e[0m";
+webpack;
+
+## since pagespeed rewrites these files, it gets upset if they are already encoded and it hasn't cached them yet
+# so we are only using brotli on files that pagespeed does not re-write (modules that are not explicitly including in a script tag)
+# shopt -s extglob;
+# brotli -f module/!(index.mjs);
+# echo -e "\e[35m brotli compression complete \e[0m";

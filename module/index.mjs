@@ -1,17 +1,10 @@
 "use strict";
 import { Form } from "./Form.mjs";
+import { isDocumentLoaded, loadDeferredStylesheets } from "./util.mjs";
 
-(function index() {
-	const isDocumentLoaded = new window.Promise((resolve) => {
-		if (window.document.readyState === "loading")
-			window.document.addEventListener("DOMContentLoaded", resolve, false);
-		else
-			resolve();
-	});
-
-	(async function onDocumentLoad() {
-		await isDocumentLoaded;
-		const form = new Form();
-		form.init();
-	})().catch(console.error);
-})();
+(async function onDocumentLoad() {
+	loadDeferredStylesheets().catch(console.error);
+	await isDocumentLoaded;
+	const form = new Form();
+	form.init();
+})().catch(console.error);

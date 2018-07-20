@@ -10,6 +10,7 @@
 		<link href="/module/util.mjs" rel="modulepreload">
 		<link href="/module/Elements.mjs" rel="modulepreload">
 		<link href="/module/Form.mjs" rel="modulepreload">
+		<link href="/module/Request.mjs" rel="modulepreload">
 		<link href="/module/Response.mjs" rel="modulepreload">
 		<link href="/module/SoundType.mjs" rel="modulepreload">
 		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
@@ -32,35 +33,13 @@
 		<meta content="<!--# echo var="keywords" -->" name="keywords">
 		<title><!--# echo var="title" --></title>
 		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
-		<style nonce="<!--# echo var="nonce" -->">
-			audio {
-				display: block;
-				object-fit: initial;
-			}
-			output { display: block; }
-			::cue {
-				color: black;
-				font-size: 12px;
-			}
-			.ponisonus-inline-list {
-				display: inline-block;
-				list-style: none;
-				padding-left: unset;
-			}
-			.ponisonus-inline-list > li { display: inline-block; }
-			.ponisonus-inline-list > li::before { content: "|\0a"; }
-			.ponisonus-inline-list > li:first-child::before { content: "\0a"; }
-
-			#div-sound-types {
-				display: flex;
-				flex-wrap: wrap;
-			}
-			#div-sound-types > span, fieldset > span { padding: 0 0.5rem; }
-			#ul-output-audio { list-style: none; }
-		</style>
+		<!-- <style nonce="< !--# echo var="nonce" - ->"></style> -->
 		<script async nomodule src="/js/index.js"></script>
 		<script async src="/module/index.mjs" type="module"></script>
-		<!-- <script async defer src="/module/index.mjs"></script> -->
+		<noscript id="noscript-deferred-stylesheets">
+			<link href="/css/common.css" rel="stylesheet">
+			<link href="/css/index.css" rel="stylesheet">
+		</noscript>
 	</head>
 	<body>
 		<main>
@@ -127,52 +106,50 @@
 			</section>
 			<aside>
 				<nav>
-					<p>
-						<header>
-							<h2>Source Audio</h2>
-							The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
-						</header>
-						<ul>
-							<li>
-								Season 1:
-								<ul class="ponisonus-inline-list">
-									<li><a href="//www.youtube.com/watch?v=r-iTJkKZaKE" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-									<li><a href="//media.pone.tube/twivoice/s1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-								</ul>
-							</li>
-							<li>
-								Season 2:
-								<ul class="ponisonus-inline-list">
-									<li><a href="//www.dailymotion.com/video/x6gh6nv" rel="external noopener" target="_blank" type="text/html">Watch on DailyMotion</a></li>
-									<li><a href="//media.pone.tube/twivoice/s2.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-								</ul>
-							</li>
-							<li>
-								Season 3:
-								<ul class="ponisonus-inline-list">
-									<li><a href="//www.youtube.com/watch?v=B2Of7jztD6g" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-									<li><a href="//media.pone.tube/twivoice/s3.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-									<li><a href="//media.pone.tube/twivoice/s3.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
-								</ul>
-							</li>
-							<li>
-								Season 4:
-								<ul class="ponisonus-inline-list">
-									<li><a href="//www.youtube.com/watch?v=zhPoLBpx8pg" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-									<li><a href="//media.pone.tube/twivoice/s4.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-									<li><a href="//media.pone.tube/twivoice/s4.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
-								</ul>
-							</li>
-							<li>
-								Equestria Girls (movie):
-								<ul class="ponisonus-inline-list">
-									<li><a href="//www.youtube.com/watch?v=xfCNED1OQFI" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
-									<li><a href="//media.pone.tube/twivoice/eqg1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-								</ul>
-							</li>
-							<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
-						</ul>
-					</p>
+					<header>
+						<h2>Source Audio</h2>
+						The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
+					</header>
+					<ul>
+						<li>
+							Season 1:
+							<ul class="ponisonus-inline-list">
+								<li><a href="//www.youtube.com/watch?v=r-iTJkKZaKE" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+								<li><a href="//media.pone.tube/twivoice/s1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+							</ul>
+						</li>
+						<li>
+							Season 2:
+							<ul class="ponisonus-inline-list">
+								<li><a href="//www.dailymotion.com/video/x6gh6nv" rel="external noopener" target="_blank" type="text/html">Watch on DailyMotion</a></li>
+								<li><a href="//media.pone.tube/twivoice/s2.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+							</ul>
+						</li>
+						<li>
+							Season 3:
+							<ul class="ponisonus-inline-list">
+								<li><a href="//www.youtube.com/watch?v=B2Of7jztD6g" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+								<li><a href="//media.pone.tube/twivoice/s3.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+								<li><a href="//media.pone.tube/twivoice/s3.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
+							</ul>
+						</li>
+						<li>
+							Season 4:
+							<ul class="ponisonus-inline-list">
+								<li><a href="//www.youtube.com/watch?v=zhPoLBpx8pg" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+								<li><a href="//media.pone.tube/twivoice/s4.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+								<li><a href="//media.pone.tube/twivoice/s4.ogg" rel="external noopener" target="_blank" type="audio/ogg">Download OGG</a></li>
+							</ul>
+						</li>
+						<li>
+							Equestria Girls (movie):
+							<ul class="ponisonus-inline-list">
+								<li><a href="//www.youtube.com/watch?v=xfCNED1OQFI" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
+								<li><a href="//media.pone.tube/twivoice/eqg1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+							</ul>
+						</li>
+						<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+					</ul>
 				</nav>
 			</aside>
 		</main>

@@ -1,25 +1,22 @@
 import { elements } from "./Elements.mjs";
-import { removeAllChildren, setAttributes } from "./util.mjs";
+import { setAttributes } from "./util.mjs";
 const URL = window.URL || window.webkitURL;
 
 export class Response {
 	static checkResponseError(response) {
 		if (!response)
-			throw "Could not parse response or an empty response received";
+			throw new window.Error("Could not parse response or an empty response received");
 		else if (response.responseType === "error")
-			throw response.response;
+			throw new window.Error(response.response);
 		return response;
 	}
-	constructor(responsePromise, form) {
-		[this.numRequests, this.responsePromise, this.form] = [0, responsePromise, form];
-		this.process().catch(console.error);
-	}
-	async process() {
+	constructor(responsePromise) { this.responsePromise = responsePromise; }
+	async process(pony, format, output) {
 		const responseObject = await this.responsePromise;
 		const response = this.constructor.checkResponseError(await responseObject.json()).response;
-		const audio = await window.fetch(response.outputFile.url).then((response) => response.blob()).catch(console.error);
+		const audio = await window.fetch(response.outputFile.url).then((response) => response.blob());
 		const audioUrl = URL.createObjectURL(audio);
-		const download = `PoniSonus ${this.form.selectPonies.value}${(this.numRequests++ === 0) ? "" : ` ${this.numRequests.toString()}`}.${this.form.selectOutputFormat.value}`;
+		const download = `PoniSonus ${pony}${(this.constructor.numRequests++ < 0) ? "" : ` ${this.constructor.numRequests.toString()}`}.${format}`;
 		const outputAudio = elements.templateOutputAudio.content.cloneNode(true);
 		const audioElement = outputAudio.querySelector("audio");
 		try { audioElement.srcObject = audio; }
@@ -35,7 +32,7 @@ export class Response {
 		const soundTypePercentageUsed = response.numberSoundTypesUsed / response.totalSoundTypesSelected;
 		setAttributes(outputAudio.getElementById("data-percent-of-total"), { textContent: `${Number(soundTypePercentageUsed * 100).toFixed(2)}%`, value: soundTypePercentageUsed }).removeAttribute("id");
 		outputAudio.querySelector("code").textContent = JSON.stringify(response);
-		removeAllChildren(elements.outputAudio).appendChild(outputAudio);
-		// window.setTimeout(() => removeAllChildren(elements.outputAudio), response.outputFile.lifetimeSeconds * 1000);
+		output.value = outputAudio;
 	}
 }
+Response.numRequests = -1;

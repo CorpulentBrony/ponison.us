@@ -2,7 +2,7 @@ import { elements } from "./Elements.mjs";
 import { Request } from "./Request.mjs";
 import { Response } from "./Response.mjs";
 import * as SoundType from "./SoundType.mjs";
-import { createElement, setAttributes } from "./util.mjs";
+import { createElement, detectDynamicImport, setAttributes } from "./util.mjs";
 
 export class Form {
 	constructor() {
@@ -14,6 +14,7 @@ export class Form {
 		this.inputMaxDelaySeconds = new InputMaxDelaySeconds();
 		this.inputMinDelaySeconds = new InputMinDelaySeconds();
 		this.inputSelectAll = new InputSelectAll();
+		this.outputAudio = new OutputAudio();
 		this.selectOutputFormat = new SelectOutputFormat();
 		this.selectPonies = new SelectPonies();
 	}
@@ -49,22 +50,22 @@ export class Form {
 		return this;
 	}
 	onSubmit() {
-		new Response(window.fetch(new Request(JSON.stringify({
+		const request = new Request({
 			requestType: "audio", 
-			desiredLengthSeconds: window.Number(elements.inputDesiredLengthSeconds.value),
-			maxDelaySeconds: window.Number(elements.inputMaxDelaySeconds.value),
-			minDelaySeconds: window.Number(elements.inputMinDelaySeconds.value),
-			outputFormat: elements.selectOutputFormat.value,
-			ponies: [elements.selectPonies.value], 
+			desiredLengthSeconds: window.Number(this.inputDesiredLengthSeconds.value),
+			maxDelaySeconds: window.Number(this.inputMaxDelaySeconds.value),
+			minDelaySeconds: window.Number(this.inputMinDelaySeconds.value),
+			outputFormat: this.selectOutputFormat.value,
+			ponies: [this.selectPonies.value], 
 			soundTypes: this.divSoundTypes.selected
-		}))), this);
+		});
+		const response = new Response(request.fetch());
+		response.process(this.selectPonies.value, this.selectOutputFormat.value, this.outputAudio).catch(console.error);
 	}
 }
 
 class FormElement {
-	constructor() {
-		this.element = elements[this.constructor.name.replace(/^([A-Z])/, (c) => c[0].toLowerCase())];
-	}
+	constructor() { this.element = elements[this.constructor.name.replace(/^([A-Z])/, (c) => c[0].toLowerCase())]; }
 	get value() { return this.element.value; }
 	set value(newValue) { this.element.value = newValue; }
 	addEventListener(...args) { return this.element.addEventListener(...args); }
@@ -123,6 +124,24 @@ class InputMinDelaySeconds extends TimingFormElement {}
 
 class InputSelectAll extends FormElement {
 	onChange(divSoundTypes) { divSoundTypes.checked = this.element.checked; }
+}
+
+class OutputAudio extends FormElement {
+	constructor() {
+		super();
+		this.isLoading = false;
+	}
+	get loading() { return this.isLoading; }
+	set loading(isLoading) {
+		if (isLoading && !this.loading)
+			this.value = window.document.createElement("progress");
+		this.isLoading = isLoading;
+	}
+	set value(newNode) {
+		if (!(newNode instanceof window.Node))
+			newNode = window.document.createTextNode(String(newNode));
+		this.removeAllChildren().element.appendChild(newNode);
+	}
 }
 
 class SelectOutputFormat extends FormElement {

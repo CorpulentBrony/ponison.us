@@ -1,0 +1,21 @@
+audio {
+	display: block;
+	object-fit: initial;
+}
+output { display: block; }
+::cue {
+	color: black;
+	font-size: 12px;
+}
+.ponisonus-inline-list {
+	display: inline-block;
+	list-style: none;
+	padding-left: unset;
+
+	& > li {
+		display: inline-block;
+
+		&::before { content: "|\0a"; }
+		&:first-child::before { content: "\0a"; }
+	}
+}
