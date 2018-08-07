@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+@font-face {
+	font-family: "Futura PT";
+	font-style: normal;
+	font-weight: normal;
+	src: local("Futura PT"),
+		url("/font/futura-pt/Futura PT.woff2") format("woff2"),
+		url("/font/futura-pt/Futura PT.woff") format("woff"),
+		url("/font/futura-pt/Futura PT.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "Futura PT";
+	font-style: normal;
+	font-weight: bold;
+	src: local("Futura PT Bold"), 
+		url("/font/futura-pt/Futura PT Bold.woff2") format("woff2"),
+		url("/font/futura-pt/Futura PT Bold.woff") format("woff"),
+		url("/font/futura-pt/Futura PT Bold.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "Futura PT";
+	font-style: italic;
+	font-weight: normal;
+	src: local("Futura PT Italic"),
+		url("/font/futura-pt/Futura PT Italic.woff2") format("woff2"),
+		url("/font/futura-pt/Futura PT Italic.woff") format("woff"),
+		url("/font/futura-pt/Futura PT Italic.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "Futura PT";
+	font-style: italic;
+	font-weight: bold;
+	src: local("Futura PT Bold Italic"),
+		url("/font/futura-pt/Futura PT Bold Italic.woff2") format("woff2"),
+		url("/font/futura-pt/Futura PT Bold Italic.woff") format("woff"),
+		url("/font/futura-pt/Futura PT Bold Italic.otf") format("opentype");
+}

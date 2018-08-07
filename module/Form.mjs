@@ -2,7 +2,7 @@ import { elements } from "./Elements.mjs";
 import { Request } from "./Request.mjs";
 import { Response } from "./Response.mjs";
 import * as SoundType from "./SoundType.mjs";
-import { createElement, detectDynamicImport, setAttributes } from "./util.mjs";
+import { createElement, setAttributes } from "./util.mjs";
 
 export class Form {
 	constructor() {

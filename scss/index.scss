@@ -1,3 +1,48 @@
+@import "colors";
+
+@mixin pone-font-size($font-size) {
+	font-size: $font-size;
+	line-height: $font-size;
+}
+
+@mixin pone-outline($color) {
+	text-shadow: 2px 2px 2px $color, -1px 1px 0 $color, 1px -1px 0 $color, -1px -1px 0 $color;
+}
+
+::moz-selection { background-color: $twi-hair-highlight-pink; }
+::selection { background-color: $twi-hair-highlight-pink; }
+a {
+	border-bottom: 1px solid;
+	text-decoration: none;
+
+	&:link { color: $twi-hair-primary; }
+	&:visited { color: $twi-hair-highlight-purple; }
+	// &:focus, &:hover { }
+	&:active { color: $twi-hair-highlight-pink; }
+}
+body {
+	background-color: $twi-body-fill;
+	color: $twi-eye-gradient-dark;
+	fill: $twi-eye-gradient-dark;
+	font-family: "Futura PT", "Harmonia Sans", Verdana, sans-serif;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-smooth: always;
+	text-rendering: optimizeLegibility;
+}
+h1, h2 {
+	@include pone-outline($twi-eye-gradient-dark);
+	color: $twi-hair-highlight-pink;
+	fill: $twi-hair-highlight-pink;
+	font-family: Equestria;
+	font-weight: normal;
+	letter-spacing: 3px;
+	margin: 1rem 0;
+}
+h1::moz-selection, h2::moz-selection { color: $twi-hair-highlight-purple; }
+h1::selection, h2::selection { color: $twi-hair-highlight-purple; }
+h1 { @include pone-font-size(3rem); }
+h2 { @include pone-font-size(2rem); }
 #div-sound-types {
 	display: flex;
 	flex-wrap: wrap;

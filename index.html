@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+<!--# set var="url" value="https://ponison.us/" -->
 <!--# set var="title" value="PoniSonus - Pony Sound Generator" -->
 <!--# set var="description" value="A tool that can be used to generate sound files of your favorite pony for whatever degenerate reasons you may have, you disgusting pervert." -->
 <!--# set var="keywords" value="pony,clop,sounds,erotic,horse,my little pony,friendship is magic,twilight sparkle" -->
-<html lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" 🦄 🐎🐱>
+<!--# set var="squareThumbnail" value="/img/twiggle_face_square.png" -->
+<html itemid="<!--# echo var="url" -->" itemscope itemtype="http://schema.org/WebPage" lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" 🦄 🐎🐱>
 	<head>
 		<meta charset="utf-8">
-		<link href="https://ponison.us/" rel="canonical self" type="text/html">
+		<link href="<!--# echo var="url" -->" itemprop="url" rel="canonical self" type="text/html">
 		<!-- preloads -->
 		<link href="/module/util.mjs" rel="modulepreload">
 		<link href="/module/Elements.mjs" rel="modulepreload">
@@ -13,6 +15,7 @@
 		<link href="/module/Request.mjs" rel="modulepreload">
 		<link href="/module/Response.mjs" rel="modulepreload">
 		<link href="/module/SoundType.mjs" rel="modulepreload">
+		<!-- <link as="font" href="/font/equestria/Equestria.woff2" rel="preload" type="font/woff2"> -->
 		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
 		<!-- <link as="script" href="//www.google-analytics.com/analytics.js" rel="preload" type="application/javascript"> -->
 		<!-- <link href="/manifest.jsonmanifest" rel="manifest" type="application/manifest+json"> -->
@@ -22,31 +25,37 @@
 		<!-- <meta content="/browserconfig.xml" name="msapplication-config"> -->
 		<meta content="width=device-width, initial-scale=1, maximum-scale=5" name="viewport">
 		<!-- <link href="/privacy.html" rel="privacy-policy" type="text/html"> -->
-		<link href="//www.youtube.com/c/CorpulentBrony" rel="author publisher" type="text/html">
+		<link href="//www.youtube.com/c/CorpulentBrony" itemprop="accountablePerson author" rel="author publisher" type="text/html">
 		<link href="//horse.best" rel="bestpony" type="text/html">
 		<link href="//donutsteel.pl" rel="code-license content-license copyright license" type="text/html">
 		<link href="//github.com/CorpulentBrony/ponison.us" rel="code-repository content-repository external source" type="text/html">
 		<!-- <link href="/podcast/%252Fmlp%252F.jpg" rel="icon" sizes="88x88" type="image/jpeg"> -->
 		<meta content="<!--# echo var="title" -->" name="title" property="og:title">
 		<meta content="<!--# echo var="description" -->" name="description" property="og:description">
-		<meta content="<!--# echo var="description" -->" itemprop="description">
 		<meta content="<!--# echo var="keywords" -->" name="keywords">
+		<meta content="<!--# echo var="keywords" -->" itemprop="keywords">
+		<link href="//donutsteel.pl" itemprop="license" rel="code-license content-license copyright license" type="text/html">
+		<script type="application/ld+json"><!--# include file="jsonld/WebApplication.jsonld" --></script>
 		<title><!--# echo var="title" --></title>
-		<!-- remember to disable nonce in config file once we are done using inline styles/scripts -->
+		<!-- example of using inline nonce for future reference -->
 		<!-- <style nonce="< !--# echo var="nonce" - ->"></style> -->
 		<script async nomodule src="/js/index.js"></script>
 		<script async src="/module/index.mjs" type="module"></script>
 		<noscript id="noscript-deferred-stylesheets">
 			<link href="/css/common.css" rel="stylesheet">
 			<link href="/css/index.css" rel="stylesheet">
+			<link href="/font/equestria/equestria.css" rel="stylesheet">
+			<link href="/font/futura-pt/futura-pt.css" rel="stylesheet">
 		</noscript>
+		<link href="<!--# echo var="squareThumbnail" -->" rel="icon" sizes="690x690" type="image/png">
+		<link href="<!--# echo var="squareThumbnail" -->" id="link-thumbnail" itemprop="image thumbnailUrl" type="image/png">
 	</head>
 	<body>
-		<main>
+		<main itemprop="mainContentOfPage">
 			<section>
 				<header>
-					<h1><!--# echo var="title" --></h1>
-					<p><!--# echo var="description" --></p>
+					<h1 itemprop="headline name"><!--# echo var="title" --></h1>
+					<p itemprop="description"><!--# echo var="description" --></p>
 					<p>
 						Everything is working now!  It may still look ugly and there may still be some bugs, but you can generate audio files, they will load into the browser, and you can download them!  To see current codebase progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a>.
 					</p>
@@ -55,7 +64,7 @@
 					<header>
 						<h2>Sound Generator</h2>
 						<aside>
-							You can also <a href="/pony/" target="_blank" type="text/html">browse</a> the currently available sounds.
+							You can also <a href="/pony/" itemprop="relatedLink" target="_blank" type="text/html">browse</a> the currently available sounds.
 						</aside>
 					</header>
 					<!-- To prevent a call to the API client side on load, just load the file virtually from the server using an internal proxy into a JSON script object -->
@@ -108,7 +117,7 @@
 				<nav>
 					<header>
 						<h2>Source Audio</h2>
-						The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" target="_blank" type="text/html">best pony</a>:
+						The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" itemid="http://twispark.com/" itemprop="character" itemscope itemtype="http://schema.org/Person" target="_blank" type="text/html">best pony</a>:
 					</header>
 					<ul>
 						<li>
@@ -175,5 +184,16 @@
 				<label></label>
 			</span>
 		</template>
+		<span itemprop="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+			<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<a href="/" itemprop="item" itemref="link-thumbnail" itemtype="http://schema.org/WebPage">
+					<meta content="<!--# echo var="title" -->" itemprop="name">
+				</a>
+				<meta content="1" itemprop="position">
+			</span>
+		</span>
+		<span itemid="<!--# echo var="url" -->#site" itemprop="isPartOf" itemscope itemtype="http://schema.org/WebSite">
+			<link href="<!--# echo var="url" -->" itemprop="url" type="text/html">
+		</span>
 	</body>
 </html>
