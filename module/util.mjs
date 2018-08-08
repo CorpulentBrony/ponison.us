@@ -17,11 +17,11 @@ export function createElement(name, attributes = {}, parent = undefined, text = 
 	return element;
 }
 
-export function detectDynamicImport() {
-	try { new window.Function("import(\"\")"); }
-	catch (err) { return false; }
-	return true;
-}
+// export function detectDynamicImport() {
+// 	try { new window.Function("import(\"\")"); }
+// 	catch (err) { return false; }
+// 	return true;
+// }
 
 export async function loadDeferredStylesheets(containerId = "noscript-deferred-stylesheets") {
 	const parser = new window.DOMParser();

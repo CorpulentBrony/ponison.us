@@ -9,6 +9,23 @@
 	text-shadow: 2px 2px 2px $color, -1px 1px 0 $color, 1px -1px 0 $color, -1px -1px 0 $color;
 }
 
+%fg-color {
+	caret-color: $twi-eye-gradient-dark;
+	color: $twi-eye-gradient-dark;
+	fill: $twi-eye-gradient-dark;
+}
+%font {
+	font-family: "Futura PT", "Harmonia Sans", Verdana, sans-serif;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-smooth: always;
+	text-rendering: optimizeLegibility;
+}
+%no-appearance {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+
 ::moz-selection { background-color: $twi-hair-highlight-pink; }
 ::selection { background-color: $twi-hair-highlight-pink; }
 a {
@@ -21,14 +38,21 @@ a {
 	&:active { color: $twi-hair-highlight-pink; }
 }
 body {
+	@extend %fg-color;
+	@extend %font;
+	// @include pone-set-fg-color($twi-eye-gradient-dark);
+	background-attachment: fixed;
 	background-color: $twi-body-fill;
-	color: $twi-eye-gradient-dark;
-	fill: $twi-eye-gradient-dark;
-	font-family: "Futura PT", "Harmonia Sans", Verdana, sans-serif;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-	font-smooth: always;
-	text-rendering: optimizeLegibility;
+	background-image: linear-gradient(145deg, $twi-body-fill 81%, $twi-hair-primary 82%, $twi-hair-highlight-purple 91%, $twi-hair-highlight-pink 94%, $twi-hair-primary);
+	background-size: 100vw 100vh;
+}
+button {
+	@extend %fg-color;
+	@extend %font;
+}
+fieldset {
+	border-color: $twi-eye-gradient-dark;
+	border-width: 1px;
 }
 h1, h2 {
 	@include pone-outline($twi-eye-gradient-dark);
@@ -43,6 +67,22 @@ h1::moz-selection, h2::moz-selection { color: $twi-hair-highlight-purple; }
 h1::selection, h2::selection { color: $twi-hair-highlight-purple; }
 h1 { @include pone-font-size(3rem); }
 h2 { @include pone-font-size(2rem); }
+input {
+	@extend %fg-color;
+	@extend %font;
+	border-color: $twi-eye-highlight-dark $twi-eye-highlight-light $twi-eye-highlight-light $twi-eye-highlight-dark;
+}
+input[type=number] { @extend %no-appearance; }
+option {
+	@extend %fg-color;
+	@extend %font;
+	@extend %no-appearance;
+}
+select {
+	@extend %fg-color;
+	@extend %font;
+	// @extend %no-appearance;
+}
 #div-sound-types {
 	display: flex;
 	flex-wrap: wrap;

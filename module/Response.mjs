@@ -25,7 +25,6 @@ export class Response {
 		setAttributes(outputAudio.getElementById("a-download"), { download, href: audioUrl }).removeAttribute("id");
 		setAttributes(outputAudio.getElementById("time-duration"), { datetime: `PT${response.outputFile.durationSeconds}S`, textContent: `${response.outputFile.durationSeconds} seconds` }).removeAttribute("id");
 		setAttributes(outputAudio.getElementById("data-size"), { textContent: `${response.outputFile.sizeBytes} bytes`, value: response.outputFile.sizeBytes }).removeAttribute("id");
-		// setAttributes(outputAudio.getElementById("time-lifetime"), { datetime: `PT${response.outputFile.lifetimeSeconds}S`, textContent: `${response.outputFile.lifetimeSeconds} seconds` }).removeAttribute("id");
 		setAttributes(outputAudio.getElementById("time-processing"), { datetime: `PT${response.generationTimeElapsedSeconds}S`, textContent: `${response.generationTimeElapsedSeconds} seconds`}).removeAttribute("id");
 		setAttributes(outputAudio.getElementById("data-used-sound-types"), { textContent: `${response.numberSoundTypesUsed} sound types`, value: response.numberSoundTypesUsed }).removeAttribute("id");
 		setAttributes(outputAudio.getElementById("data-total-sound-types"), { textContent: String(response.totalSoundTypesSelected), value: response.totalSoundTypesSelected }).removeAttribute("id");
