@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-<!--# set var="url" value="https://ponison.us/" -->
-<!--# set var="title" value="PoniSonus - Pony Sound Generator" -->
-<!--# set var="description" value="A tool that can be used to generate sound files of your favorite pony for whatever degenerate reasons you may have, you disgusting pervert." -->
-<!--# set var="keywords" value="pony,clop,sounds,erotic,horse,my little pony,friendship is magic,twilight sparkle" -->
-<!--# set var="squareThumbnail" value="/img/twiggle_face_square.png" -->
-<html itemid="<!--# echo var="url" -->" itemscope itemtype="http://schema.org/WebPage" lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" 🦄 🐎🐱>
+<html itemid="<!--# echo var="ponisonus_url" -->" itemscope itemtype="http://schema.org/WebPage" lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" 🦄 🐎🐱>
 	<head>
 		<meta charset="utf-8">
-		<link href="<!--# echo var="url" -->" itemprop="url" rel="canonical self" type="text/html">
+		<link href="<!--# echo var="ponisonus_url" -->" itemprop="url" rel="canonical self" type="text/html">
+
 		<!-- preloads -->
 		<link href="/module/util.mjs" rel="modulepreload">
 		<link href="/module/Elements.mjs" rel="modulepreload">
@@ -18,44 +14,71 @@
 		<!-- <link as="font" href="/font/equestria/Equestria.woff2" rel="preload" type="font/woff2"> -->
 		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
 		<!-- <link as="script" href="//www.google-analytics.com/analytics.js" rel="preload" type="application/javascript"> -->
-		<!-- <link href="/manifest.jsonmanifest" rel="manifest" type="application/manifest+json"> -->
-		<!-- <link href="/sitemap.xml" rel="sitemap" type="application/xml"> -->
-		<meta content="<!--# echo var="title" -->" name="application-name">
-		<!-- <meta content="#263773" name="theme-color"> -->
-		<!-- <meta content="/browserconfig.xml" name="msapplication-config"> -->
+
+		<!-- app-related links and metadata -->
+		<link href="/manifest.jsonmanifest" rel="manifest" type="application/manifest+json">
+		<link href="/sitemap.xml" rel="sitemap" type="application/xml">
+		<meta content="<!--# echo var="ponisonus_title" -->" name="application-name">
+		<meta content="/browserconfig.xml" name="msapplication-config">
+		<meta content="#22093f" name="theme-color">
 		<meta content="width=device-width, initial-scale=1, maximum-scale=5" name="viewport">
-		<!-- <link href="/privacy.html" rel="privacy-policy" type="text/html"> -->
-		<link href="//www.youtube.com/c/CorpulentBrony" itemprop="accountablePerson author" rel="author publisher" type="text/html">
-		<link href="//horse.best" rel="bestpony" type="text/html">
-		<link href="//donutsteel.pl" rel="code-license content-license copyright license" type="text/html">
-		<link href="//github.com/CorpulentBrony/ponison.us" rel="code-repository content-repository external source" type="text/html">
-		<!-- <link href="/podcast/%252Fmlp%252F.jpg" rel="icon" sizes="88x88" type="image/jpeg"> -->
-		<meta content="<!--# echo var="title" -->" name="title" property="og:title">
-		<meta content="<!--# echo var="description" -->" name="description" property="og:description">
-		<meta content="<!--# echo var="keywords" -->" name="keywords">
-		<meta content="<!--# echo var="keywords" -->" itemprop="keywords">
-		<link href="//donutsteel.pl" itemprop="license" rel="code-license content-license copyright license" type="text/html">
+		<title><!--# echo var="ponisonus_title" --></title>
+
+		<!-- generic metadata -->
+		<meta content="<!--# echo var="ponisonus_title" -->" name="title">
+		<meta content="<!--# echo var="ponisonus_description" -->" name="description">
+		<meta content="<!--# echo var="ponisonus_keywords" -->" name="keywords">
+
+		<!-- opengraph specific metadata -->
+		<meta content="otaku12" property="fb:admins">
+		<meta content="<!--# echo var="ponisonus_description" -->" property="og:description">
+		<meta content="<!--# echo var="ponisonus_url" --><!--# echo var="ponisonus_thumbnail" -->" property="og:image">
+		<meta content="690" property="og:image:width">
+		<meta content="690" property="og:image:height">
+		<meta content="image/png" property="og:image:type">
+		<meta content="<!--# echo var="ponisonus_title" -->" property="og:title">
+		<meta content="website" property="og:type">
+		<meta content="<!--# echo var="ponisonus_url" -->" property="og:url">
+
+		<!-- twitter specific metadata -->
+		<meta content="summary_large_image" name="twitter:card">
+		<meta content="@CorpulentBrony" name="twitter:creator">
+		<meta content="@CorpulentBrony" name="twitter:site">
+
+		<!-- schema.org links and metadata -->
+		<link href="<!--# echo var="ponisonus_thumbnail" -->" id="link-thumbnail" itemprop="image thumbnailUrl" type="image/png">
+		<meta content="<!--# echo var="ponisonus_keywords" -->" itemprop="keywords">
 		<script type="application/ld+json"><!--# include file="jsonld/WebApplication.jsonld" --></script>
-		<title><!--# echo var="title" --></title>
+
+		<!-- scripts -->
 		<!-- example of using inline nonce for future reference -->
 		<!-- <style nonce="< !--# echo var="nonce" - ->"></style> -->
 		<script async nomodule src="/js/index.js"></script>
 		<script async src="/module/index.mjs" type="module"></script>
+
+		<!-- stylesheets -->
 		<noscript id="noscript-deferred-stylesheets">
 			<link href="/css/common.css" rel="stylesheet">
 			<link href="/css/index.css" rel="stylesheet">
 			<link href="/font/equestria/equestria.css" rel="stylesheet">
 			<link href="/font/futura-pt/futura-pt.css" rel="stylesheet">
 		</noscript>
-		<link href="<!--# echo var="squareThumbnail" -->" rel="icon" sizes="690x690" type="image/png">
-		<link href="<!--# echo var="squareThumbnail" -->" id="link-thumbnail" itemprop="image thumbnailUrl" type="image/png">
+
+		<!-- miscellaneous links -->
+		<link href="//www.youtube.com/c/CorpulentBrony" itemprop="accountablePerson author" rel="author publisher" type="text/html">
+		<link href="//horse.best" rel="bestpony" type="text/html">
+		<link href="//donutsteel.pl" itemprop="license" rel="code-license content-license copyright license" type="text/html">
+		<link href="//github.com/CorpulentBrony/ponison.us" rel="code-repository content-repository external source" type="text/html">
+		<link href="<!--# echo var="ponisonus_thumbnail" -->" rel="icon" sizes="690x690" type="image/png">
+		<!-- <link href="/privacy.html" rel="privacy-policy" type="text/html"> -->
 	</head>
 	<body>
+		<div id="ponisonus-div-bg"></div>
 		<main itemprop="mainContentOfPage">
 			<section>
 				<header>
-					<h1 itemprop="headline name"><!--# echo var="title" --></h1>
-					<p itemprop="description"><!--# echo var="description" --></p>
+					<h1 itemprop="headline name"><!--# echo var="ponisonus_title" --></h1>
+					<p itemprop="description"><!--# echo var="ponisonus_description" --></p>
 					<p>
 						Everything is working now!  It may still look ugly and there may still be some bugs, but you can generate audio files, they will load into the browser, and you can download them!  To see current codebase progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a>.
 					</p>
@@ -113,29 +136,42 @@
 					</form>
 				</section>
 			</section>
+
+			<!-- provides links to source video and audio -->
 			<aside>
 				<nav>
 					<header>
 						<h2>Source Audio</h2>
-						The idea for this site came when I was mashing together voice clips of a certain best pony and enjoying them.  You also can enjoy the voice of <a href="//horse.best" itemid="http://twispark.com/" itemprop="character" itemscope itemtype="http://schema.org/Person" target="_blank" type="text/html">best pony</a>:
+						The idea for this site came when I was mashing together voice clips of a certain <a href="//horse.best" itemid="http://twispark.com/" itemprop="character" itemscope itemtype="http://schema.org/Person" target="_blank" type="text/html">best pony</a> from 
+						<span itemscope>
+							<span id="span-mlp-fim-tv-series" itemid="https://www.imdb.com/title/tt1751105/" itemprop="partOfSeries" itemscope itemtype="http://schema.org/TVSeries">
+								<cite itemprop="name">My Little Pony: Friendship is Magic</cite> 
+							</span>
+						</span>.  I've linked to these videos and audio files below if you'd also like to appreciate her mellifluous voice.
 					</header>
 					<ul>
 						<li>
-							Season 1:
+							<span itemid="https://www.imdb.com/title/tt1751105/episodes?season=1" itemprop="citation" itemref="span-mlp-fim-tv-series" itemscope itemtype="http://schema.org/TVSeason">
+								Season <span itemprop="seasonNumber">1</span>:
+							</span>
 							<ul class="ponisonus-inline-list">
 								<li><a href="//www.youtube.com/watch?v=r-iTJkKZaKE" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
 								<li><a href="//media.pone.tube/twivoice/s1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
 							</ul>
 						</li>
 						<li>
-							Season 2:
+							<span itemid="https://www.imdb.com/title/tt1751105/episodes?season=2" itemprop="citation" itemref="span-mlp-fim-tv-series" itemscope itemtype="http://schema.org/TVSeason">
+								Season <span itemprop="seasonNumber">2</span>:
+							</span>
 							<ul class="ponisonus-inline-list">
 								<li><a href="//www.dailymotion.com/video/x6gh6nv" rel="external noopener" target="_blank" type="text/html">Watch on DailyMotion</a></li>
 								<li><a href="//media.pone.tube/twivoice/s2.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
 							</ul>
 						</li>
 						<li>
-							Season 3:
+							<span itemid="https://www.imdb.com/title/tt1751105/episodes?season=3" itemprop="citation" itemref="span-mlp-fim-tv-series" itemscope itemtype="http://schema.org/TVSeason">
+								Season <span itemprop="seasonNumber">3</span>:
+							</span>
 							<ul class="ponisonus-inline-list">
 								<li><a href="//www.youtube.com/watch?v=B2Of7jztD6g" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
 								<li><a href="//media.pone.tube/twivoice/s3.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
@@ -143,7 +179,9 @@
 							</ul>
 						</li>
 						<li>
-							Season 4:
+							<span itemid="https://www.imdb.com/title/tt1751105/episodes?season=4" itemprop="citation" itemref="span-mlp-fim-tv-series" itemscope itemtype="http://schema.org/TVSeason">
+								Season <span itemprop="seasonNumber">4</span>:
+							</span>
 							<ul class="ponisonus-inline-list">
 								<li><a href="//www.youtube.com/watch?v=zhPoLBpx8pg" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
 								<li><a href="//media.pone.tube/twivoice/s4.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
@@ -151,49 +189,83 @@
 							</ul>
 						</li>
 						<li>
-							Equestria Girls (movie):
+							<span itemid="https://www.imdb.com/title/tt2908228/" itemprop="citation" itemscope itemtype="http://schema.org/Movie">
+								<time datetime="2013-08-24" itemprop="dateCreated"></time>
+								<span itemid="https://www.imdb.com/name/nm2149505/" itemprop="director" itemscope itemtype="http://schema.org/Person">
+									<meta content="Jayson Thiessen" itemprop="name">
+								</span>
+								<span itemid="https://www.imdb.com/name/nm6348823/" itemprop="director" itemscope itemtype="http://schema.org/Person">
+									<meta content="Noelle Benvenuti" itemprop="name">
+								</span>
+								<link href="https://derpicdn.net/img/view/2013/5/29/336388__safe_twilight+sparkle_equestria+girls_equestria+girls+%28movie%29_humanized_human+ponidox_magic+mirror_mirror_movie+poster_my+little+pony+logo_.jpg" itemprop="image" type="image/jpeg">
+								<cite itemprop="name">My Little Pony: Equestria Girls</cite>:
+							</span>
 							<ul class="ponisonus-inline-list">
 								<li><a href="//www.youtube.com/watch?v=xfCNED1OQFI" rel="external noopener" target="_blank" type="text/html">Watch on YouTube</a></li>
 								<li><a href="//media.pone.tube/twivoice/eqg1.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
 							</ul>
 						</li>
-						<li>My Little Pony: The Movie: <a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a></li>
+						<li>
+							<span itemid="https://www.imdb.com/title/tt4131800/" itemprop="citation" itemscope itemtype="http://schema.org/Movie">
+								<time datetime="2017-10-06" itemprop="dateCreated"></time>
+								<span itemid="https://www.imdb.com/name/nm2149505/" itemprop="director" itemscope></span>
+								<link href="https://derpicdn.net/img/view/2017/4/7/1406013__safe_applejack_fluttershy_pinkie+pie_rainbow+dash_rarity_spike_twilight+sparkle_my+little+pony-colon-+the+movie_spoiler-colon-my+little+pony+m.jpeg" itemprop="image" type="image/jpeg">
+								<cite itemprop="name">My Little Pony: The Movie</cite>:
+							</span>
+							<a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a>
+						</li>
 					</ul>
 				</nav>
 			</aside>
 		</main>
-		<template id="template-output-audio">
-			<audio controls height="225" loop preload="auto" width="400">
-				<track default kind="captions">
-				Your browser does not support <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement" rel="external noopener" target="_blank" type="text/html">HTML5 media elements</a>, but you can download the audio file using the link below.
-			</audio>
-			<ul id="ul-output-audio">
-				<li><a id="a-download" download>Download audio 🐎</a></li>
-				<li><data id="data-size"></data> 🕒 <time id="time-duration"></time></li>
-				<li>There were <data id="data-used-sound-types"></data> used out of the possible <data id="data-total-sound-types"></data> selected (<data id="data-percent-of-total"></data> of total)</li>
-				<li>Processing time: <time id="time-processing"></time></li>
-			</ul>
-			<details>
-				<summary>View result object (for nerds)</summary>
-				<code></code>
-			</details>
+
+		<!-- used to load the background image after CSS has finished loading -->
+		<template id="template-background-image">
+			<picture data-pagespeed-no-transform>
+				<source data-pagespeed-no-transform srcset="/img/twiggle_full/3573.webp 3.7x, /img/twiggle_full/2880.webp 3x, /img/twiggle_full/1920.webp 2x, /img/twiggle_full/1280.webp 1.3x, /img/twiggle_full/960.webp" type="image/webp">
+				<img alt="" data-pagespeed-no-transform id="ponisonus-img-bg" src="/img/twiggle_full/960.png" srcset="/img/twiggle_full/3573.png 3.7x, /img/twiggle_full/2880.png 3x, /img/twiggle_full/1920.png 2x, /img/twiggle_full/1280.png 1.3x" type="image/png">
+			</picture>
 		</template>
+
+		<!-- audio result template -->
+		<template id="template-output-audio">
+			<div itemprop="audio" itemscope itemtype="http://schema.org/AudioObject">
+				<audio controls height="225" itemprop="associatedMedia encoding" loop preload="auto" width="400">
+					<track default itemprop="transcript" kind="captions">
+					Your browser does not support <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement" rel="external noopener" target="_blank" type="text/html">HTML5 media elements</a>, but you can download the audio file using the link below.
+				</audio>
+				<ul id="ul-output-audio">
+					<li><a id="a-download" download itemprop="contentUrl">Download audio 🐎</a></li>
+					<li><data id="data-size" itemprop="contentSize"></data> 🕒 <time id="time-duration" itemprop="duration"></time></li>
+					<li>There were <data id="data-used-sound-types"></data> used out of the possible <data id="data-total-sound-types"></data> selected (<data id="data-percent-of-total"></data> of total)</li>
+					<li>Processing time: <time id="time-processing"></time></li>
+				</ul>
+				<details>
+					<summary>View result object (for nerds)</summary>
+					<code></code>
+				</details>
+			</div>
+		</template>
+
+		<!-- sound type checkbox template -->
 		<template id="template-sound-type">
 			<span>
 				<input checked type="checkbox">
 				<label></label>
 			</span>
 		</template>
-		<span itemprop="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+
+		<!-- schema.org metadata -->
+		<span itemprop="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="presentation">
 			<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
 				<a href="/" itemprop="item" itemref="link-thumbnail" itemtype="http://schema.org/WebPage">
-					<meta content="<!--# echo var="title" -->" itemprop="name">
+					<meta content="<!--# echo var="ponisonus_title" -->" itemprop="name">
 				</a>
 				<meta content="1" itemprop="position">
 			</span>
 		</span>
-		<span itemid="<!--# echo var="url" -->#site" itemprop="isPartOf" itemscope itemtype="http://schema.org/WebSite">
-			<link href="<!--# echo var="url" -->" itemprop="url" type="text/html">
+		<span itemid="<!--# echo var="ponisonus_url" -->#site" itemprop="isPartOf" itemscope itemtype="http://schema.org/WebSite" role="presentation">
+			<link href="<!--# echo var="ponisonus_url" -->" itemprop="url" type="text/html">
 		</span>
 	</body>
 </html>

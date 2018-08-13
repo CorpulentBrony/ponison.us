@@ -1,0 +1,23 @@
+{
+	"name": "<!--# echo var="ponisonus_title" -->",
+	"short_name": "<!--# echo var="host" -->",
+	"description": "<!--# echo var="ponisonus_description" -->",
+	"author": "Corpulent Brony",
+	"background_color": "#d19fe3",
+	"developer": {
+		"name": "Corpulent Brony",
+		"url": "https://plus.google.com/+CorpulentBrony"
+	},
+	"display": "standalone",
+	"icons": [
+		{ "sizes": "690x690", "src": "<!--# echo var="ponisonus_thumbnail" -->", "type": "image/png" }
+	],
+	"orientation": "any",
+	"related_applications": [{
+		"platform": "web",
+		"url": "<!--# echo var="ponisonus_url" -->"
+	}],
+	"scope": "/",
+	"start_url": "/",
+	"theme_color": "#22093f"
+}
