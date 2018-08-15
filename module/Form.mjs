@@ -50,6 +50,7 @@ export class Form {
 		return this;
 	}
 	onSubmit() {
+		this.outputAudio.busy = true;
 		const request = new Request({
 			requestType: "audio", 
 			desiredLengthSeconds: window.Number(this.inputDesiredLengthSeconds.value),
@@ -67,6 +68,12 @@ export class Form {
 class FormElement {
 	constructor() { this.element = elements[this.constructor.name.replace(/^([A-Z])/, (c) => c[0].toLowerCase())]; }
 	get value() { return this.element.value; }
+	set busy(isBusy) {
+		if (isBusy)
+			this.element.setAttribute("aria-busy", true);
+		else
+			this.element.removeAttribute("aria-busy");
+	}
 	set value(newValue) { this.element.value = newValue; }
 	addEventListener(...args) { return this.element.addEventListener(...args); }
 	removeAllChildren() {
@@ -146,28 +153,35 @@ class OutputAudio extends FormElement {
 
 class SelectOutputFormat extends FormElement {
 	init(validOutputFormats) {
+		this.busy = true;
 		const options = window.document.createDocumentFragment();
 
 		for (const outputFormat in validOutputFormats)
 			createElement("option", {}, options, outputFormat);
 		this.element.appendChild(options);
+		this.busy = false;
 		return this;
 	}
 }
 
 class SelectPonies extends FormElement {
 	init(ponies, soundTypeOptions) {
+		this.busy = true;
 		const options = window.document.createDocumentFragment();
 		ponies.forEach((pony) => {
 			createElement("option", {}, options, pony.name);
 			soundTypeOptions.set(pony.name, { ponyName: pony.name, soundTypes: pony.soundTypes });
 		});
 		this.element.appendChild(options);
+		this.busy = false;
 		return this;
 	}
 	onChange(divSoundTypes, inputSelectAll, soundTypeOptions) {
+		divSoundTypes.busy = true;
 		divSoundTypes.removeAllChildren().element.appendChild(soundTypeOptions.get(this.value).content.cloneNode(true));
 		inputSelectAll.element.checked = true;
 		divSoundTypes.updateInputs();
+		divSoundTypes.busy = false;
+		divSoundTypes.element.setAttribute("aria-live", "polite");
 	}
 }

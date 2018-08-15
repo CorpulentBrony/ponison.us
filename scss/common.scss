@@ -1,13 +1,34 @@
 @import "colors";
 
+@mixin button-color-overlay($opacity, $color: #fff) {
+	&::after {
+		@extend %button-border-radius;
+		background-color: $color;
+		content: "";
+		height: 100%;
+		left: 0;
+		opacity: $opacity;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
+}
+
 @mixin pone-font-size($font-size) {
 	font-size: $font-size;
-	line-height: $font-size;
+	line-height: $font-size + 0.35rem;
+
+	& .ponisonus-icon svg { height: $font-size; }
 }
 
 $bg-color: $twi-body-fill;
 $fg-color: $twi-eye-gradient-dark;
 
+%button-border-radius {
+	border: none;
+	border-radius: 2px;
+	box-sizing: border-box;
+}
 %fg-color {
 	caret-color: $fg-color;
 	color: $fg-color;
@@ -36,6 +57,12 @@ $fg-color: $twi-eye-gradient-dark;
 	-moz-appearance: none;
 	-webkit-appearance: none;
 }
+%ponisonus-bg-common {
+	bottom: -32rem;
+	position: fixed;
+	right: -31rem;
+	transform: rotate(335deg);
+}
 %section-vertical-spacing {
 	margin: 0.5rem 0;
 
@@ -58,8 +85,11 @@ $fg-color: $twi-eye-gradient-dark;
 a {
 	&:link { color: $twi-hair-primary; }
 	&:visited { color: $twi-hair-highlight-purple; }
-	// &:focus, &:hover { }
-	&:active { color: $twi-hair-highlight-pink; }
+	&:focus, &:hover { background-color: $twi-hair-highlight-pink; }
+	&:active {
+		background-color: inherit;
+		color: $twi-hair-highlight-pink;
+	}
 }
 aside { @extend %section-vertical-spacing; }
 audio {
@@ -69,6 +99,7 @@ audio {
 body {
 	@extend %fg-color;
 	@extend %font;
+	@include pone-font-size(1rem);
 	background-attachment: fixed;
 	background-color: $bg-color;
 	background-image: linear-gradient(145deg, $bg-color 81%, $twi-hair-primary 82%, $twi-hair-highlight-purple 91%, $twi-hair-highlight-pink 94%, $twi-hair-primary);
@@ -77,18 +108,46 @@ body {
 	transition: all 0.5s;
 }
 button {
+	@extend %button-border-radius;
 	@extend %fg-color;
 	@extend %font;
+	@extend %no-appearance;
+	align-items: center;
+	background-color: $twi-hair-highlight-pink;
+	border: none;
+	border-radius: 2px;
+	box-sizing: border-box;
+	display: inline-flex;
+	filter: drop-shadow(1px 1px 2px fade-out($fg-color, 0.45));
 	font-weight: bold;
+	height: 2rem;
+	justify-content: center;
+	min-width: 4rem;
+	overflow: hidden;
+	padding: 0 1rem;
+	position: relative;
+	text-transform: uppercase;
 	-webkit-touch-callout: none;
 	touch-callout: none;
+	transition: filter 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
+	vertical-align: middle;
+
+	&:focus, &:hover {
+		@include button-color-overlay(0.2);
+		filter: drop-shadow(2px 2px 4px fade-out($fg-color, 0.45));
+	}
+	&:active {
+		@include button-color-overlay(0.4);
+		filter: drop-shadow(3px 3px 6px fade-out($fg-color, 0.45));
+	}
 }
 fieldset {
 	border-color: $fg-color;
 	border-width: 1px;
+	margin-bottom: 8px;
 }
 h1 {
 	@extend %headings;
@@ -127,34 +186,60 @@ select {
 }
 ul { margin: 0; }
 
-.ponisonus-inline-list {
-	display: inline-block;
-	list-style: none;
-	padding-left: unset;
+footer[role=contentinfo] {
+	@include pone-font-size(0.75rem);
+	letter-spacing: 1px;
+}
 
-	& > li {
+.ponisonus {
+	&-icon {
+		align-self: center;
+		display: inline-flex;
+
+		svg {
+			fill: currentColor;
+			position: relative;
+			top: 0.125rem;
+		}
+	}
+	&-inline-list {
+		@extend .ponisonus-plain-list;
 		display: inline-block;
 
-		&::before { content: "|\0a"; }
-		&:first-child::before { content: "\0a"; }
+		& > li {
+			display: inline-block;
+
+			&::before { content: "|\0a"; }
+			&:first-child::before { content: "\0a"; }
+		}
+	}
+	&-plain-list {
+		list-style: none;
+		padding-left: unset;
 	}
 }
 
-#ponisonus-div-bg {
-	background-color: fade-out($bg-color, 0.2);
-	height: 100vh;
-	left: 0;
-	position: fixed;
-	top: 0;
-	width: 100vw;
-	z-index: -998;
-}
-#ponisonus-img-bg {
-	bottom: -32rem;
-	filter: drop-shadow(8px 8px 4px rgba(0, 0, 0, 0.55));
-	position: fixed;
-	right: -31rem;
-	transform: rotate(335deg);
-	transition: inherit;
-	z-index: -999;
+#ponisonus {
+	&-div-bg {
+		background-color: fade-out($bg-color, 0.2);
+		height: 100vh;
+		left: 0;
+		position: fixed;
+		top: 0;
+		width: 100vw;
+		z-index: -998;
+
+		&-click-catch {
+			@extend %ponisonus-bg-common;
+			height: 900px;
+			width: 650px;
+			z-index: -1;
+		}
+	}
+	&-img-bg {
+		@extend %ponisonus-bg-common;
+		filter: drop-shadow(8px 8px 4px rgba(0, 0, 0, 0.55));
+		transition: inherit;
+		z-index: -999;
+	}
 }

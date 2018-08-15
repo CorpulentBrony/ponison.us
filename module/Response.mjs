@@ -32,6 +32,7 @@ export class Response {
 		setAttributes(outputAudio.getElementById("data-percent-of-total"), { textContent: `${Number(soundTypePercentageUsed * 100).toFixed(2)}%`, value: soundTypePercentageUsed }).removeAttribute("id");
 		outputAudio.querySelector("code").textContent = JSON.stringify(response);
 		output.value = outputAudio;
+		output.busy = false;
 	}
 }
 Response.numRequests = -1;

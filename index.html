@@ -12,7 +12,7 @@
 		<link href="/module/Response.mjs" rel="modulepreload">
 		<link href="/module/SoundType.mjs" rel="modulepreload">
 		<!-- <link as="font" href="/font/equestria/Equestria.woff2" rel="preload" type="font/woff2"> -->
-		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="preload" type="image/gif">
+		<link as="image" href="//www.gstatic.com/psa/static/1.gif" rel="external preload" type="image/gif">
 		<!-- <link as="script" href="//www.google-analytics.com/analytics.js" rel="preload" type="application/javascript"> -->
 
 		<!-- app-related links and metadata -->
@@ -65,45 +65,42 @@
 		</noscript>
 
 		<!-- miscellaneous links -->
-		<link href="//www.youtube.com/c/CorpulentBrony" itemprop="accountablePerson author" rel="author publisher" type="text/html">
-		<link href="//horse.best" rel="bestpony" type="text/html">
-		<link href="//donutsteel.pl" itemprop="license" rel="code-license content-license copyright license" type="text/html">
+		<link href="//www.youtube.com/c/CorpulentBrony" itemprop="accountablePerson author" rel="author external publisher" type="text/html">
+		<link href="//horse.best" rel="bestpony external" type="text/html">
+		<link href="//donutsteel.pl" itemprop="license" rel="code-license content-license copyright external license" type="text/html">
 		<link href="//github.com/CorpulentBrony/ponison.us" rel="code-repository content-repository external source" type="text/html">
+		<link href="//github.com/CorpulentBrony/ponison.us/issues" rel="external help" type="text/html">
 		<link href="<!--# echo var="ponisonus_thumbnail" -->" rel="icon" sizes="690x690" type="image/png">
 		<!-- <link href="/privacy.html" rel="privacy-policy" type="text/html"> -->
 	</head>
 	<body>
-		<div id="ponisonus-div-bg"></div>
+		<div id="ponisonus-div-bg" role="presentation"></div>
+		<div id="ponisonus-div-bg-click-catch" role="presentation"></div>
 		<main itemprop="mainContentOfPage">
-			<section>
+			<section role="main">
 				<header>
 					<h1 itemprop="headline name"><!--# echo var="ponisonus_title" --></h1>
-					<p itemprop="description"><!--# echo var="ponisonus_description" --></p>
-					<p>
-						Everything is working now!  It may still look ugly and there may still be some bugs, but you can generate audio files, they will load into the browser, and you can download them!  To see current codebase progress, check out the <a href="//github.com/CorpulentBrony/ponison.us" rel="external noopener" target="_blank" type="text/html">repository on GitHub</a>.
-					</p>
+					<!--# echo var="ponisonus_description" -->
 				</header>
 				<section>
 					<header>
-						<h2>Sound Generator</h2>
-						<aside>
-							You can also <a href="/pony/" itemprop="relatedLink" target="_blank" type="text/html">browse</a> the currently available sounds.
-						</aside>
+						<h2 id="h2-sound-generator">Sound Generator</h2>
+						You can also <a href="/pony/" itemprop="relatedLink" target="_blank" type="text/html">browse</a> the currently available sounds.
 					</header>
 					<!-- To prevent a call to the API client side on load, just load the file virtually from the server using an internal proxy into a JSON script object -->
 					<script id="script-list" type="application/json"><!--# include virtual="/list" --></script>
-					<form autocomplete="on" id="form-request" name="form-request">
+					<form aria-labelledby="h2-sound-generator" autocomplete="on" id="form-request" name="form-request">
 						<div>
 							<label for="select-ponies">Select a pony</label>
 							<select autocomplete="name" id="select-ponies" required></select>
 						</div>
 						<fieldset id="fieldset-sound-types">
-							<legend>Select sound type(s)</legend>
+							<legend id="legend-sound-types">Select sound type(s)</legend>
 							<span>
 								<input id="input-select-all" type="checkbox">
 								<label for="input-select-all">Select All</label>
 							</span>
-							<div id="div-sound-types">
+							<div aria-labelledby="legend-sound-types" aria-relevant="all" id="div-sound-types" role="group">
 								If you see this message, then either you have JavaScript disabled or your browser is not supported.  Try the newest version of <a href="https://www.google.com/chrome/browser/" rel="external noopener" target="_blank" type="text/html">Chrome</a> or <a href="https://www.mozilla.org/firefox" rel="external noopener" target="_blank" type="text/html">Firefox</a>.
 							</div>
 						</fieldset>
@@ -127,18 +124,18 @@
 							<select id="select-output-format" required></select>
 						</div>
 						<fieldset>
-							<legend>Result</legend>
-							<output for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio">
+							<legend id="legend-output-audio">Result</legend>
+							<output aria-labelledby="legend-output-audio" aria-live="polite" for="select-ponies fieldset-sound-types input-desired-length-seconds input-min-delay-seconds input-max-delay-seconds select-output-format" id="output-audio" role="alert">
 								Select a pony, the sound types you want to include, the output format, and set your timing options then click the button below to generate the audio.
 							</output>
 						</fieldset>
-						<button id="button-get-audio" required type="button">Get Audio</button>
+						<button id="button-get-audio" required title="Get Audio" type="button"><span aria-label="emoticon: speaker" role="img">🔊</span> Get Audio</button>
 					</form>
 				</section>
 			</section>
 
 			<!-- provides links to source video and audio -->
-			<aside>
+			<aside role="complementary">
 				<nav>
 					<header>
 						<h2>Source Audio</h2>
@@ -197,7 +194,7 @@
 								<span itemid="https://www.imdb.com/name/nm6348823/" itemprop="director" itemscope itemtype="http://schema.org/Person">
 									<meta content="Noelle Benvenuti" itemprop="name">
 								</span>
-								<link href="https://derpicdn.net/img/view/2013/5/29/336388__safe_twilight+sparkle_equestria+girls_equestria+girls+%28movie%29_humanized_human+ponidox_magic+mirror_mirror_movie+poster_my+little+pony+logo_.jpg" itemprop="image" type="image/jpeg">
+								<link href="https://derpicdn.net/img/view/2013/5/29/336388__safe_twilight+sparkle_equestria+girls_equestria+girls+%28movie%29_humanized_human+ponidox_magic+mirror_mirror_movie+poster_my+little+pony+logo_.jpg" itemprop="image" rel="external" type="image/jpeg">
 								<cite itemprop="name">My Little Pony: Equestria Girls</cite>:
 							</span>
 							<ul class="ponisonus-inline-list">
@@ -209,7 +206,7 @@
 							<span itemid="https://www.imdb.com/title/tt4131800/" itemprop="citation" itemscope itemtype="http://schema.org/Movie">
 								<time datetime="2017-10-06" itemprop="dateCreated"></time>
 								<span itemid="https://www.imdb.com/name/nm2149505/" itemprop="director" itemscope></span>
-								<link href="https://derpicdn.net/img/view/2017/4/7/1406013__safe_applejack_fluttershy_pinkie+pie_rainbow+dash_rarity_spike_twilight+sparkle_my+little+pony-colon-+the+movie_spoiler-colon-my+little+pony+m.jpeg" itemprop="image" type="image/jpeg">
+								<link href="https://derpicdn.net/img/view/2017/4/7/1406013__safe_applejack_fluttershy_pinkie+pie_rainbow+dash_rarity_spike_twilight+sparkle_my+little+pony-colon-+the+movie_spoiler-colon-my+little+pony+m.jpeg" itemprop="image" rel="external" type="image/jpeg">
 								<cite itemprop="name">My Little Pony: The Movie</cite>:
 							</span>
 							<a href="//media.pone.tube/twivoice/movie.mp3" rel="external noopener" target="_blank" type="audio/mpeg">Download MP3</a>
@@ -217,13 +214,20 @@
 					</ul>
 				</nav>
 			</aside>
+			<hr>
+			<footer role="contentinfo">
+				<ul class="ponisonus-plain-list">
+					<li>Check out our <a href="//github.com/CorpulentBrony/ponison.us" rel="code-repository content-repository external noopener" target="_blank" type="text/html">repository on GitHub <span aria-label="icon: Github logo" class="ponisonus-icon" role="img" title="Github logo"><!--# include file="/img/github.svg" --></span></a></li>
+					<li>This site protected under the <a href="//donutsteel.pl" rel="code-license content-license external license" target="_blank" type="text/html">Donut Steel license <span aria-label="emoticon: donut" role="img" title="donut">🍩</span></a></li>
+				</ul>
+			</footer>
 		</main>
 
 		<!-- used to load the background image after CSS has finished loading -->
 		<template id="template-background-image">
-			<picture data-pagespeed-no-transform>
+			<picture data-pagespeed-no-transform role="presentation">
 				<source data-pagespeed-no-transform srcset="/img/twiggle_full/3573.webp 3.7x, /img/twiggle_full/2880.webp 3x, /img/twiggle_full/1920.webp 2x, /img/twiggle_full/1280.webp 1.3x, /img/twiggle_full/960.webp" type="image/webp">
-				<img alt="" data-pagespeed-no-transform id="ponisonus-img-bg" src="/img/twiggle_full/960.png" srcset="/img/twiggle_full/3573.png 3.7x, /img/twiggle_full/2880.png 3x, /img/twiggle_full/1920.png 2x, /img/twiggle_full/1280.png 1.3x" type="image/png">
+				<img alt="" data-pagespeed-no-transform id="ponisonus-img-bg" role="presentation" src="/img/twiggle_full/960.png" srcset="/img/twiggle_full/3573.png 3.7x, /img/twiggle_full/2880.png 3x, /img/twiggle_full/1920.png 2x, /img/twiggle_full/1280.png 1.3x" type="image/png">
 			</picture>
 		</template>
 
@@ -256,7 +260,7 @@
 		</template>
 
 		<!-- schema.org metadata -->
-		<span itemprop="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="presentation">
+		<span aria-hidden="true" itemprop="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="presentation">
 			<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
 				<a href="/" itemprop="item" itemref="link-thumbnail" itemtype="http://schema.org/WebPage">
 					<meta content="<!--# echo var="ponisonus_title" -->" itemprop="name">
@@ -265,7 +269,7 @@
 			</span>
 		</span>
 		<span itemid="<!--# echo var="ponisonus_url" -->#site" itemprop="isPartOf" itemscope itemtype="http://schema.org/WebSite" role="presentation">
-			<link href="<!--# echo var="ponisonus_url" -->" itemprop="url" type="text/html">
+			<link href="<!--# echo var="ponisonus_url" -->" itemprop="url" rel="external" type="text/html">
 		</span>
 	</body>
 </html>
